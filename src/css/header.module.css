@@ -1,0 +1,93 @@
+.headerRoot{
+    width: 100%;
+    overflow: hidden;
+    background: rgb(3,6,91);
+    background:  rgb(0, 0, 0);
+    position: relative;
+}
+
+.headerRoot a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+/**
+*   Main header.
+*/
+.header{
+    height: 100%;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.logo img {
+    margin: 0;
+    height: 44px;
+}
+
+.user {
+    position: absolute;
+    left: 48%;
+    color: white;
+    padding-left: 2%;
+    padding-right: 2%;
+}
+
+.menuIcon {
+    background: black;
+    color: white;
+    display: block;
+    position: absolute;
+    padding-left: 2%;
+    padding-right: 2%;
+    right: 0;
+    top: 0;
+    
+    border: none;
+    cursor: pointer;
+}
+
+button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    display: inline;
+    margin: 0;
+    padding: 0;
+  }
+  
+button:hover,
+button:focus {
+  text-decoration: none;
+}
+
+.menuIcon:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+/**
+*   Link container.
+*/
+.loginDisplay{
+    margin: auto;
+    color: rgb(216, 216, 216);
+    font-size: 60%;
+    margin-left: 10px;
+    margin-bottom: 20px;
+}
+
+.linkContainer {
+    max-height: 500px;
+    background: rgb(8, 19, 66);
+    background:  rgb(0, 0, 0);
+}
+
+.linkContainer a {
+    color: rgb(139, 139, 139);
+    padding: 10px 10px;
+    text-decoration: none;
+    font-size: 50%;
+    display: block;
+}
