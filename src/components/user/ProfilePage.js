@@ -120,7 +120,7 @@ class ProfilePage extends React.Component {
                                 </IconButton>
                             )}
                         >
-                            <Avatar className={classes.avatar} src={avatars[this.props.user.currentUser.avatar]}></Avatar>
+                            <Avatar className={classes.avatar} src={avatars.profile[this.props.user.currentUser.avatar]}></Avatar>
                         </Badge>
 
                         <Menu 
@@ -134,7 +134,7 @@ class ProfilePage extends React.Component {
                                 </Typography>
                                 <Divider></Divider>
                                 <Grid className = {classes.grid} container spacing={2} alignItems="center" justify="center">
-                                    {avatars.map((avatarPath, index)=>(
+                                    {avatars.profile.map((avatarPath, index)=>(
                                         <Grid item key={index}>
                                             <IconButton onClick={()=>{this.handleAvatarSelection(index)}}>
                                                 <Avatar src={avatarPath}></Avatar>
@@ -143,7 +143,7 @@ class ProfilePage extends React.Component {
                                     ))}
                                 </Grid>
                                 <Divider></Divider>
-                                <Avatar src={avatars[this.state.selection]} style={{margin: 'auto', marginTop: 50, marginBottom: 50, width: 100, height: 100}}></Avatar>
+                                <Avatar src={avatars.profile[this.state.selection]} style={{margin: 'auto', marginTop: 50, marginBottom: 50, width: 100, height: 100}}></Avatar>
                                 <Button variant="outlined" style={{marginLeft: 8, marginRight: 8}} onClick={this.updateAvatar}>
                                     Update avatar
                                 </Button>

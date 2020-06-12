@@ -29,6 +29,9 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 
+import avatars from '../avatars';
+import { Avatar } from '@material-ui/core';
+
 const styles = theme => ({
     root: {
         flexGrow: 1,
@@ -44,6 +47,12 @@ const styles = theme => ({
     },
     userDisplay: {
         padding: theme.spacing(5)
+    },
+    drawerAvatar: {
+        margin: 'auto',
+        marginTop: 50,
+        width: 100,
+        height: 100
     }
 })
 
@@ -111,7 +120,7 @@ class Header extends React.Component {
                                     onClick={this.handleMenu}
                                     color="inherit"
                                 >
-                                    <AccountCircle />
+                                    <Avatar src={avatars.profile[this.props.user.currentUser.avatar]}></Avatar>
                                 </IconButton>
                                 <Menu
                                     id="menu-appbar"
@@ -128,8 +137,8 @@ class Header extends React.Component {
                                     open={Boolean(this.state.profileAnchorElement)}
                                     onClose={this.handleClose}
                                 >
-                                    <MenuItem onClick={() => { this.props.history.push("/profile") }}>Profile</MenuItem>
-                                    <MenuItem onClick={this.handleLogoutClick}>Logout</MenuItem>
+                                    <MenuItem onClick={() => { this.props.history.push("/profile") }}><AccountCircle />Profile</MenuItem>
+                                    <MenuItem onClick={this.handleLogoutClick}><ExitToAppOutlinedIcon />Logout</MenuItem>
                                 </Menu>
                             </div>)
                             : (
@@ -155,6 +164,7 @@ class Header extends React.Component {
                         <List className={classes.list}>
                             {this.props.user.currentUser ? (
                                 <div>
+                                    <Avatar className={classes.drawerAvatar} src={avatars.profile[this.props.user.currentUser.avatar]}></Avatar>
                                     <div className={classes.userDisplay}>
                                         <Typography variant="body1" align="center">Logged in as {this.props.user.currentUser.displayName}</Typography>
                                     </div>

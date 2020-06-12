@@ -30,7 +30,7 @@ class LandingPage extends React.Component {
       return (
         <div className={classes.root}>
           <Typography variant="h2" align="center">Hello, {this.props.user.currentUser.displayName}.</Typography>
-          <Button className={classes.button} variant="outlined" onClick={()=>{this.props.history.push("/character-sheet-view")}}>View your character sheets</Button>
+          <Button className={classes.button} variant="outlined" onClick={()=>{this.props.history.push("/character-sheet-gallery")}}>View your character sheets</Button>
         </div>
       );
     } else {
