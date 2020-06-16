@@ -1,21 +1,13 @@
-import React from 'react';
-import axios from 'axios';
-import { setUser } from '../../redux/actions/userActions';
 import { connect } from 'react-redux';
-import { withRouter, Redirect } from 'react-router-dom';
-
+import { Paper, Typography, IconButton, TextField, Link, InputAdornment, Grid, FormHelperText, Button } from '@material-ui/core';
+import { withRouter } from 'react-router-dom';
+import { withStyles } from '@material-ui/core/styles';
+import axios from 'axios';
+import React from 'react';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
-import { withStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import { Paper, Typography, IconButton } from '@material-ui/core';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import Link from '@material-ui/core/Link';
-
+import { setUser } from '../../redux/actions/actions';
 
 const validEmailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const validPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/;
@@ -35,27 +27,41 @@ const styles = theme => ({
   },
 })
 
+/**
+ * Register page. Contains a form which allows users to register new accounts.
+ */
 class RegisterPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      // Field values for each form component
       displayName: "",
       email: "",
       password: "",
       passwordConfirm: "",
 
+      // Errors to display for each form component
       overallError: "",
       displayNameError: "",
       emailError: "",
       passwordError: "",
       passwordConfirmError: "",
 
+      // Show password as plain text or not
       showPassword: false,
       showPasswordConfirm: false
     }
   }
 
   componentDidMount() {
+    this.checkCurrentUser();
+  }
+
+  /**
+   * Checks if a user is currently logged in. If they are, then they are automatically taken to the profile page.
+   * Makes call to /current-user.
+   */
+  checkCurrentUser = () => {
     axios({
       method: 'get',
       withCredentials: true,
@@ -64,28 +70,47 @@ class RegisterPage extends React.Component {
       console.log("Successfully authenticated user.");
       this.props.history.push("/profile")
     }).catch((err) => {
-      if (err) {
-        this.setState({ redirect: null });
-      }
+      console.log(err);
     });
   }
 
+  /**
+   * Change state of this class to match display name input
+   * @param event Event for function call
+   */
   displayNameChangeHandler = (event) => {
     this.setState({ displayName: event.target.value });
   }
 
+  /**
+   * Change state of this class to match email input
+   * @param event Event for function call
+   */
   emailChangeHandler = (event) => {
     this.setState({ email: event.target.value });
   }
 
+  /**
+   * Change state of this class to match password input
+   * @param event Event for function call
+   */
   passwordChangeHandler = (event) => {
     this.setState({ password: event.target.value });
   }
 
+  /**
+   * Change state of this class to match password confirm input
+   * @param event Event for function call
+   */
   passwordConfirmChangeHandler = (event) => {
     this.setState({ passwordConfirm: event.target.value });
   }
 
+  /**
+   * Submit form details to the server. Attempts to register with the current details,
+   * if registration fails, display error.
+   * @param event Event for function call
+   */
   submitHandler = async (event) => {
     event.preventDefault();
 
@@ -198,6 +223,7 @@ class RegisterPage extends React.Component {
       valid = false;
     }
 
+    // Set error messages
     this.setState({
       overallError: overallError,
       displayNameError: displayNameError,
@@ -209,28 +235,28 @@ class RegisterPage extends React.Component {
     return valid;
   }
 
+  /**
+   * Toggles showing password field as plain text
+   */
   handleClickShowPassword = () => {
     this.setState({ showPassword: !this.state.showPassword });
   };
 
+  /**
+   * Toggles showing password confirm field as plain text
+   */
   handleClickShowPasswordConfirm = () => {
     this.setState({ showPasswordConfirm: !this.state.showPasswordConfirm });
   };
 
   render() {
     const classes = this.props.classes;
-
-    if(this.props.user.currentUser){
-      return (<Redirect to="/"></Redirect>);
-    }
-
     return (
       <Paper className={classes.root}>
         <Typography variant="h4" align="center" style={{marginBottom:"10px"}}>
           Register new account
         </Typography>
-        <form noValidate autoComplete="off">
-          
+        <form noValidate>
           <Grid container
             direction="column"
             justify="center"

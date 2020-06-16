@@ -1,18 +1,19 @@
-import React from 'react';
-import axios from 'axios';
-import { withRouter } from 'react-router-dom';
 import { Button, Typography, Grid, IconButton, TextField, Card, CardMedia, CardActionArea, CardContent, CardActions, Divider, InputAdornment } from '@material-ui/core';
-
-
+import { withRouter } from 'react-router-dom';
+import { withStyles } from '@material-ui/styles';
 import AddIcon from '@material-ui/icons/Add';
+import axios from 'axios';
+import React from 'react';
 import SearchIcon from '@material-ui/icons/Search';
 
-import { withStyles } from '@material-ui/styles';
+import CharacterSheetForm from './CharacterSheetForm';
 import avatars from '../../avatars';
+import { setUser } from './../../redux/actions/actions';
+import { connect } from 'react-redux';
 
 const styles = theme => ({
     root: {
-      paddingTop: '8%',
+      paddingTop: '4%',
       paddingBottom: '4%',
       minHeight: 800,
       marginLeft: theme.spacing(2),
@@ -69,21 +70,92 @@ const styles = theme => ({
     }
 })
 
+const emptySheet = {
+    _id: null,
+    characterName: "",
+    race: "",
+    class: "",
+    background: "",
+    alignment: "",
+    health: {
+        currentHealth: 0,
+        maxHealth: 0
+    },
+    armourClass: 0,
+    exp: 0,
+    hitDice: {
+        hitDiceType: 4,
+        hitDiceMax: 0,
+    },
+    description: "",
+    equipment: "",
+    proficiencies: "",
+
+    // All stats
+    stats: {
+        strength: 0,
+        dexterity: 0,
+        constitution: 0,
+        intelligence: 0,
+        wisdom: 0,
+        charisma: 0,
+    },
+
+    // All skills
+    skills: {
+        acrobatics: false,
+        animalHandling: false,
+        arcana: false,
+        athletics: false,
+        deception: false,
+        history: false,
+        insight: false,
+        intimidation: false,
+        investigation: false,
+        medicine: false,
+        nature: false,
+        perception: false,
+        performance: false,
+        persuasion: false,
+        religion: false,
+        sleightOfHand: false,
+        stealth: false,
+        survival: false,
+    },
+
+    // Feats, spells and racial traits
+    featsAndSpells: [],
+}
+
+/**
+ * This page allows users to create and view their character sheet collection.
+ * They can create, view, edit or delete character sheets on this page.
+ * There is also a search bar to search for a specific character.
+ */
 class CharacterSheetGalleryPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            characterSheets:[]
+            characterSheets: [],
+            characterSheetCreatorEnabled: false,
+            characterSheetEditorEnabled: false,
+            formSheet: emptySheet
         }
     }
 
     componentDidMount(){
-        this.retrieveCharacterSheets();
+        if(this.props.user.currentUser === null){
+            this.props.history.push('/');
+        } else {
+            this.retrieveCharacterSheets();
+        }
     }
 
-    async retrieveCharacterSheets() {
-        console.log("Sending test request for resource...");
-        await axios({
+    /**
+     * Sends GET request for all character sheets that this user owns at /character-sheet/all.
+     */
+    retrieveCharacterSheets() {
+        axios({
             method: 'get',
             url: process.env.REACT_APP_SERVER_IP + '/character-sheet/all',
             withCredentials: true
@@ -97,20 +169,44 @@ class CharacterSheetGalleryPage extends React.Component {
         })
     }
 
-    async createNewCharacterSheet() {
-        axios({
-            method: 'post',
-            withCredentials: true,
-            url: process.env.REACT_APP_SERVER_IP + '/character-sheet/new',
-            headers: {'content-type': 'application/json'},
-        }).then((res) => {
-            console.log(res);
-            this.retrieveCharacterSheets();
-        }).catch((err) => {
-            console.log(err);
-        });
+    /**
+     * Enables the character sheet creator
+     */
+    enableCharacterSheetCreator() {
+        this.setState((initialState)=>({
+            characterSheetCreatorEnabled : true, 
+            characterSheetEditorEnabled : false, 
+            formSheet: emptySheet, 
+            formSheetId: null
+        }))
     }
 
+    /**
+     * Enables the character sheet editor
+     */
+    enableCharacterSheetEditor(sheet) {
+        this.setState((initialState)=>({
+            characterSheetCreatorEnabled : false, 
+            characterSheetEditorEnabled : true,  
+            formSheet: sheet, 
+        }))
+    }
+
+    /**
+     * Disables any character sheet forms
+     */
+    disableCharacterSheetForm() {
+        this.setState((initialState)=>({
+            characterSheetCreatorEnabled : false, 
+            characterSheetEditorEnabled : false,  
+            formSheet: emptySheet, 
+        }))
+    }
+
+    /**
+     * Sends a request to delete a character sheet with a given MongoDB ID.
+     * @param sheetId id of the character sheet to delete.
+     */
     async deleteCharacterSheet(sheetId) {
         axios({
             method: 'delete',
@@ -126,10 +222,29 @@ class CharacterSheetGalleryPage extends React.Component {
 
     render() {
         const classes = this.props.classes;
-        // Sort this.state.characterSheets here
 
         return (
             <div className = {classes.root}>
+                { this.state.characterSheetCreatorEnabled && (
+                        <CharacterSheetForm 
+                            handleClose={this.disableCharacterSheetForm.bind(this)}
+                            type={this.state.characterSheetCreatorEnabled ? ("Create") : ("Edit")}
+                            refreshCharacterSheets={this.retrieveCharacterSheets.bind(this)}
+                            formSheet = {emptySheet}
+                        />
+                    )
+                }
+
+                { this.state.characterSheetEditorEnabled && (
+                        <CharacterSheetForm 
+                            handleClose={this.disableCharacterSheetForm.bind(this)}
+                            type={this.state.characterSheetCreatorEnabled ? ("Create") : ("Edit")}
+                            refreshCharacterSheets={this.retrieveCharacterSheets.bind(this)}
+                            formSheet = {this.state.formSheet}
+                        />
+                    )
+                }
+                
                 <Typography variant='h2'>Character sheet view</Typography>
                 <div className = {classes.sortContainer}>
                     <Grid className={classes.characterSheetList} 
@@ -140,9 +255,9 @@ class CharacterSheetGalleryPage extends React.Component {
                         alignItems="center"
                     >
                         <Grid item xs={12}>
-                            <TextField id="password" label="Search" variant="standard" className={classes.searchField} 
+                            <TextField label="Search" variant="standard" className={classes.searchField} 
                                 type='text' 
-                                onChange={this.passwordChangeHandler} 
+                                onChange={()=>{}} 
                                 InputProps={{
                                     endAdornment: (
                                     <InputAdornment position="start">
@@ -180,8 +295,8 @@ class CharacterSheetGalleryPage extends React.Component {
                                         <Typography variant="body1">Experience: {sheet.experience}</Typography>
                                     </CardContent>
                                     <CardActions className={classes.cardAction}>
-                                        <Button>View</Button>
-                                        <Button>Edit</Button>
+                                        <Button onClick={()=>{this.props.history.push("/character-sheet/"+sheet._id)}}>View</Button>
+                                        <Button onClick={()=>{this.enableCharacterSheetEditor(sheet)}}>Edit</Button>
                                         <Button onClick={()=>{this.deleteCharacterSheet(sheet._id)}}>Delete</Button>
                                     </CardActions>
                                 </Card>
@@ -189,7 +304,8 @@ class CharacterSheetGalleryPage extends React.Component {
                         ))}
                     </Grid>
                 }
-                <IconButton className={classes.createButton} onClick={this.createNewCharacterSheet.bind(this)} variant="outlined">
+                
+                <IconButton className={classes.createButton} onClick={this.enableCharacterSheetCreator.bind(this)} variant="outlined">
                     <AddIcon fontSize="large"></AddIcon>
                 </IconButton>
             </div>
@@ -197,5 +313,12 @@ class CharacterSheetGalleryPage extends React.Component {
     }
 }
 
-
-export default withRouter(withStyles(styles)(CharacterSheetGalleryPage));
+const mapStateToProps = state => ({
+    user: state.user
+})
+  
+const mapDispatchToProps = dispatch => ({
+    setUser: user => dispatch(setUser(user))
+})
+  
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(withStyles(styles)(CharacterSheetGalleryPage)));

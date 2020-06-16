@@ -1,36 +1,23 @@
-import React from 'react';
-import { setUser } from '../redux/actions/userActions';
+import { Avatar } from '@material-ui/core';
 import { connect } from 'react-redux';
-import axios from 'axios';
 import { withRouter } from 'react-router';
-
 import { withStyles } from '@material-ui/styles'
-
-import MenuIcon from '@material-ui/icons/Menu';
-import HomeIcon from '@material-ui/icons/Home';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import AssignmentIndOutlinedIcon from '@material-ui/icons/AssignmentIndOutlined';
-import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
-import CreateOutlinedIcon from '@material-ui/icons/CreateOutlined';
-import MeetingRoomOutlinedIcon from '@material-ui/icons/MeetingRoomOutlined';
-import Brightness7Icon from '@material-ui/icons/Brightness7';
-
 import AppBar from '@material-ui/core/AppBar';
+import axios from 'axios';
+import Button from '@material-ui/core/Button';
+import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
+import IconButton from '@material-ui/core/IconButton';
+import Menu from '@material-ui/core/Menu';
+import MenuIcon from '@material-ui/icons/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import React from 'react';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
-import Drawer from '@material-ui/core/Drawer';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Divider from '@material-ui/core/Divider';
 
+import { setUser } from '../redux/actions/actions';
 import avatars from '../avatars';
-import { Avatar } from '@material-ui/core';
+import SideDrawer from './SideDrawer'
 
 const styles = theme => ({
     root: {
@@ -42,20 +29,16 @@ const styles = theme => ({
     title: {
         flexGrow: 1,
     },
-    list: {
-        width: 250
-    },
-    userDisplay: {
-        padding: theme.spacing(5)
-    },
-    drawerAvatar: {
-        margin: 'auto',
-        marginTop: 50,
-        width: 100,
-        height: 100
-    }
 })
 
+/**
+ * Represents the main navigation bar.
+ * Features:
+ *  - When not logged in, has log in and register button
+ *  - When logged in, can see the user and view user profile
+ *  - User can log out from this component
+ *  - Can access side drawer, where most navigation will occur
+ */
 class Header extends React.Component {
     constructor(props) {
         super(props);
@@ -65,8 +48,16 @@ class Header extends React.Component {
         }
     }
 
-    async componentDidMount() {
-        await axios({
+    componentDidMount() {
+        this.getCurrentUser();    
+    }
+
+    /**
+     * Tries to obtain the current user that is logged in, and will update the redux store of the current user.
+     * Obtians user by sending request to server, /current-user.
+     */
+    getCurrentUser = () => {
+        axios({
             method: 'get',
             withCredentials: true,
             url: process.env.REACT_APP_SERVER_IP + '/current-user'
@@ -79,24 +70,52 @@ class Header extends React.Component {
         });
     }
 
-    handleDrawerOpen = () => {
-        this.setState({ leftDrawerOpen: true });
+    /**
+     * Log out by sending a request to server, /logout.
+     */
+    logOut() {
+        axios({
+            method: 'post',
+            withCredentials: true,
+            url: process.env.REACT_APP_SERVER_IP + '/logout'
+        }).then((res) => {
+            console.log("Successfully logged out user.");
+            this.props.setUser(null);
+            this.props.history.push('/');
+        }).catch((err) => {
+            if (err) {
+                this.props.setUser(null);
+                this.props.history.push('/');
+            }
+        });
     }
 
-    handleDrawerClose = () => {
-        this.setState({ leftDrawerOpen: false })
-    }
-
+    /**
+     * Sets the profile mini-menu's anchor element. This enables the menu.
+     */
     handleMenu = (event) => {
         this.setState({ profileAnchorElement: event.currentTarget });
     };
 
+    /**
+     * Sets the profile mini-menu's anchor to be null. This disables the menu.
+     */
     handleClose = () => {
         this.setState({ profileAnchorElement: null });
     };
 
-    handleLogoutClick = () => {
-        this.logOut();
+    /**
+     * Method to open the side drawer.
+     */
+    handleDrawerOpen = () => {
+        this.setState({ leftDrawerOpen: true });
+    }
+
+    /**
+     * Method to close the side drawer.
+     */
+    handleDrawerClose = () => {
+        this.setState({ leftDrawerOpen: false })
     }
 
     render() {
@@ -138,7 +157,7 @@ class Header extends React.Component {
                                     onClose={this.handleClose}
                                 >
                                     <MenuItem onClick={() => { this.props.history.push("/profile") }}><AccountCircle />Profile</MenuItem>
-                                    <MenuItem onClick={this.handleLogoutClick}><ExitToAppOutlinedIcon />Logout</MenuItem>
+                                    <MenuItem onClick={this.logOut.bind(this)}><ExitToAppOutlinedIcon />Logout</MenuItem>
                                 </Menu>
                             </div>)
                             : (
@@ -155,86 +174,11 @@ class Header extends React.Component {
                             )
                         }
                     </Toolbar>
-                    <Drawer
-                        className={classes.drawer}
-                        anchor="left"
-                        open={this.state.leftDrawerOpen}
-                        onClose={this.handleDrawerClose}
-                    >
-                        <List className={classes.list}>
-                            {this.props.user.currentUser ? (
-                                <div>
-                                    <Avatar className={classes.drawerAvatar} src={avatars.profile[this.props.user.currentUser.avatar]}></Avatar>
-                                    <div className={classes.userDisplay}>
-                                        <Typography variant="body1" align="center">Logged in as {this.props.user.currentUser.displayName}</Typography>
-                                    </div>
-                                    <Divider />
-                                    <ListItem button onClick={() => { this.props.history.push("/"); this.handleDrawerClose() }}>
-                                        <ListItemIcon><HomeIcon /></ListItemIcon>
-                                        <ListItemText>Home</ListItemText>
-                                    </ListItem>
-                                    <ListItem button onClick={() => { this.props.history.push("/profile"); this.handleDrawerClose() }}>
-                                        <ListItemIcon><AccountCircle /></ListItemIcon>
-                                        <ListItemText>Profile</ListItemText>
-                                    </ListItem>
-                                    <ListItem button onClick={() => { this.props.history.push("/character-sheet-gallery"); this.handleDrawerClose() }}>
-                                        <ListItemIcon><AssignmentIndOutlinedIcon /></ListItemIcon>
-                                        <ListItemText>My Character Sheets</ListItemText>
-                                    </ListItem>
-                                    <ListItem button onClick={() => { this.handleLogoutClick(); this.handleDrawerClose() }}>
-                                        <ListItemIcon><ExitToAppOutlinedIcon /></ListItemIcon>
-                                        <ListItemText>Log Out</ListItemText>
-                                    </ListItem>
-                                </div>
-                            ) : (
-                                    <div>
-                                        <ListItem button onClick={() => { this.props.history.push("/"); this.handleDrawerClose() }}>
-                                            <ListItemIcon><HomeIcon /></ListItemIcon>
-                                            <ListItemText>Home</ListItemText>
-                                        </ListItem>
-                                        <ListItem button onClick={() => { this.props.history.push("/login"); this.handleDrawerClose() }}>
-                                            <ListItemIcon><MeetingRoomOutlinedIcon /></ListItemIcon>
-                                            <ListItemText>Log In</ListItemText>
-                                        </ListItem>
-                                        <ListItem button onClick={() => { this.props.history.push("/register"); this.handleDrawerClose() }}>
-                                            <ListItemIcon><CreateOutlinedIcon /></ListItemIcon>
-                                            <ListItemText>Register</ListItemText>
-                                        </ListItem>
-                                    </div>
-                                )
-                            }
-                            <ListItem button onClick={this.props.toggleDarkTheme}>
-                                <ListItemIcon><Brightness7Icon /></ListItemIcon>
-                                <ListItemText>Change to {this.props.themeType === 'light' ? "Dark" : "Light"} Mode</ListItemText>
-                            </ListItem>
-                        </List>
-                    </Drawer>
+
+                    <SideDrawer handleDrawerClose={this.handleDrawerClose.bind(this)} open={this.state.leftDrawerOpen} handleLogOutClick={this.logOut.bind(this)}></SideDrawer>
                 </AppBar>
             </div>
         );
-    }
-
-    toggleMenu() {
-        this.setState((state, props) => {
-            return { menuEnabled: !state.menuEnabled }
-        })
-    }
-
-    async logOut() {
-        await axios({
-            method: 'post',
-            withCredentials: true,
-            url: process.env.SERVER_IP + '/logout'
-        }).then((res) => {
-            console.log("Successfully logged out user.");
-            this.props.setUser(null);
-            this.props.history.push('/');
-        }).catch((err) => {
-            if (err) {
-                this.props.setUser(null);
-                this.props.history.push('/');
-            }
-        });
     }
 }
 const mapStateToProps = state => ({

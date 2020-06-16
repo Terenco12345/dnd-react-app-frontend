@@ -1,11 +1,11 @@
-import React from 'react';
-import { withStyles } from '@material-ui/styles';
-import { setUser } from '../../redux/actions/userActions';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-
-import Typography from "@material-ui/core/Typography";
+import { withStyles } from '@material-ui/styles';
 import Button from "@material-ui/core/Button";
+import React from 'react';
+import Typography from "@material-ui/core/Typography";
+
+import { setUser } from '../../redux/actions/actions';
 
 const styles = theme => ({
   root: {
