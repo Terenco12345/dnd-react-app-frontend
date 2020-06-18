@@ -40,26 +40,10 @@ class CharacterSheetForm extends React.Component {
         this.state = { ...props.formSheet, detailsError: "", started: false };
     }
 
-    componentDidUpdate() {
-        console.log(this.state)
-    }
-
-    /**
-     * Sends a request to create a new character sheet at POST /character-sheet/new.
-     */
-    createNewCharacterSheet() {
-        axios({
-            method: 'post',
-            withCredentials: true,
-            url: process.env.REACT_APP_SERVER_IP + '/character-sheet/new',
-            headers: { 'content-type': 'application/json' },
-            data: this.createCharacterSheetFromState()
-        }).then((res) => {
-            console.log(res);
-            this.props.refreshCharacterSheets();
-        }).catch((err) => {
-            console.log(err);
-        });
+    componentDidUpdate(){
+        if(this.state.started && !this.props.sheet.createPending && !this.props.sheet.updatePending){
+            this.props.handleClose();
+        }
     }
 
     setFeatsAndSpells(item) {
@@ -152,12 +136,6 @@ class CharacterSheetForm extends React.Component {
         }
     }
 
-    componentDidUpdate(){
-        if(this.state.started && !(this.props.sheet.createPending || this.props.sheet.editPending )){
-            this.props.handleClose();
-        }
-    }
-
     render() {
         const classes = this.props.classes;
 
@@ -237,7 +215,7 @@ class CharacterSheetForm extends React.Component {
                                 type="number"
                                 value={this.state.experience}
                                 style={{ maxWidth: 100 }}
-                                onChange={(event) => { this.setState({ exp: parseInt(event.target.value) }) }}
+                                onChange={(event) => { this.setState({ experience: parseInt(event.target.value) }) }}
                             />
                         </Grid>
                         <Grid item>
@@ -395,13 +373,13 @@ class CharacterSheetForm extends React.Component {
                                         } else {
                                             this.props.updateCharacterSheetForCurrentUser(this.state._id, this.createCharacterSheetFromState());
                                         }
-                                        this.setState({started: true});
+                                        this.setState({started: true})
                                     }
                                 }}
                                 color="primary"
                                 variant="contained"
                             >
-                                {(this.props.sheet.createPending || this.props.sheet.editPending) ? <CircularProgress color="inherit" size={25}/> : this.props.type + " Character"}
+                                {(this.props.sheet.createPending || this.props.sheet.updatePending) ? <CircularProgress color="inherit" size={25}/> : this.props.type + " Character"}
                                 </Button>
                         </Grid>
                         <Grid item>

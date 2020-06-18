@@ -83,7 +83,7 @@ const emptySheet = {
         maxHealth: 0
     },
     armourClass: 0,
-    exp: 0,
+    experience: 0,
     hitDice: {
         hitDiceType: 4,
         hitDiceMax: 0,

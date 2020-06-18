@@ -23,15 +23,15 @@ const initialState = {
     
     retrieveError: null,
     deleteError: null,
-    createPending: null,
-    updatePending: null
+    createError: null,
+    updateError: null
 }
 
 const resetErrors = {
     retrieveError: null,
     deleteError: null,
-    createPending: null,
-    updatePending: null
+    createError: null,
+    updateError: null
 }
 
 export default function sheet(state = initialState, action) {
