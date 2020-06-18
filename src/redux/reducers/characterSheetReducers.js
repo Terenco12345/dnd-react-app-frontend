@@ -38,11 +38,11 @@ export default function sheet(state = initialState, action) {
     switch (action.type) {
         // Retrieve sheets for current user
         case RETREIVE_CHARACTER_SHEETS_FOR_CURRENT_USER_PENDING:
-            return { ...state, fetchPending: true, ...resetErrors };
+            return { ...state, retrievePending: true, ...resetErrors };
         case RETREIVE_CHARACTER_SHEETS_FOR_CURRENT_USER_SUCCESS:
-            return { ...state, fetchPending: false, sheets: action.sheets, ...resetErrors };
+            return { ...state, retrievePending: false, sheets: action.sheets, ...resetErrors };
         case RETREIVE_CHARACTER_SHEETS_FOR_CURRENT_USER_ERROR:
-            return { ...state, fetchPending: false, retrieveError: action.error };
+            return { ...state, retrievePending: false, retrieveError: action.error };
 
         // Delete single sheet for current user
         case DELETE_CHARACTER_SHEET_FOR_CURRENT_USER_PENDING:
