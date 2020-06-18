@@ -235,7 +235,12 @@ class CharacterSheetGalleryPage extends React.Component {
                     </Grid>
                 </div>
                 <Divider></Divider>
-
+                {this.props.sheet.deletePending &&
+                    <div style={{marginTop: 20}}>
+                        <Typography variant="body1" gutterBottom>Deleting...</Typography>
+                        <CircularProgress size={25} />
+                    </div> 
+                }
                 {this.props.sheet.retrievePending ?
                     <div style={{ marginTop: 20 }}>
                         <Typography variant="body1" gutterBottom>Sheets are loading...</Typography>
@@ -266,7 +271,7 @@ class CharacterSheetGalleryPage extends React.Component {
                                         <CardActions className={classes.cardAction}>
                                             <Button onClick={() => { this.props.history.push("/character-sheet/" + sheet._id) }}>View</Button>
                                             <Button onClick={() => { this.enableCharacterSheetEditor(sheet) }}>Edit</Button>
-                                            <Button onClick={() => { this.props.deleteCharacterSheetForCurrentUser(sheet._id) }}>{this.props.sheet.deletePending ? <CircularProgress size={25} /> : "Delete"}</Button>
+                                            <Button onClick={() => { this.props.deleteCharacterSheetForCurrentUser(sheet._id) }}>Delete</Button>
                                         </CardActions>
                                     </Card>
                                 </Grid>
