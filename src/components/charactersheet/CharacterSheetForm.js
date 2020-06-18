@@ -80,7 +80,7 @@ class CharacterSheetForm extends React.Component {
         characterSheet.background = this.state.background;
         characterSheet.class = this.state.class;
         characterSheet.alignment = this.state.alignment;
-        characterSheet.armourClass = this.state.ac;
+        characterSheet.armourClass = this.state.armourClass;
         characterSheet.health = {
             currentHealth: this.state.health.currentHealth,
             maxHealth: this.state.health.maxHealth

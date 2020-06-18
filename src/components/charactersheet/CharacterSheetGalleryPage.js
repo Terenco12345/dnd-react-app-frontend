@@ -140,7 +140,8 @@ class CharacterSheetGalleryPage extends React.Component {
             characterSheets: [],
             characterSheetCreatorEnabled: false,
             characterSheetEditorEnabled: false,
-            formSheet: emptySheet
+            formSheet: emptySheet,
+            search: "",
         }
     }
 
@@ -188,6 +189,11 @@ class CharacterSheetGalleryPage extends React.Component {
 
     render() {
         const classes = this.props.classes;
+        var sortedSheets = this.props.sheet.sheets;
+        sortedSheets = sortedSheets.filter((sheet) => {
+            return (sheet.characterName.toLowerCase().includes(this.state.search.toLowerCase()));
+        })
+
         return (
             <div className={classes.root}>
                 {this.state.characterSheetCreatorEnabled && (
@@ -208,7 +214,7 @@ class CharacterSheetGalleryPage extends React.Component {
                     />
                 )}
 
-                <Typography variant='h2'>Character sheet view</Typography>
+                <Typography variant='h2'>Character sheet gallery</Typography>
                 <div className={classes.sortContainer}>
                     <Grid className={classes.characterSheetList}
                         container
@@ -220,7 +226,7 @@ class CharacterSheetGalleryPage extends React.Component {
                         <Grid item xs={12}>
                             <TextField label="Search" variant="standard" className={classes.searchField}
                                 type='text'
-                                onChange={() => { }}
+                                onChange={(event) => { this.setState({ search: event.target.value }) }}
                                 InputProps={{
                                     endAdornment: (
                                         <InputAdornment position="start">
@@ -236,49 +242,55 @@ class CharacterSheetGalleryPage extends React.Component {
                 </div>
                 <Divider></Divider>
                 {this.props.sheet.deletePending &&
-                    <div style={{marginTop: 20}}>
+                    <div style={{ marginTop: 20 }}>
                         <Typography variant="body1" gutterBottom>Deleting...</Typography>
                         <CircularProgress size={25} />
-                    </div> 
+                    </div>
                 }
                 {this.props.sheet.retrievePending ?
                     <div style={{ marginTop: 20 }}>
                         <Typography variant="body1" gutterBottom>Sheets are loading...</Typography>
                         <CircularProgress />
                     </div> :
-                    this.props.sheet.sheets.length === 0 ?
-                        <Typography>Uh oh! It looks like you don't have any sheets!</Typography> :
-                        <Grid className={classes.characterSheetList}
-                            container
-                            spacing={3}
-                            direction="row"
-                            justify="center"
-                            alignItems="center"
-                        >
-                            {this.props.sheet.sheets.map((sheet, index) => (
-                                <Grid item key={index}>
-                                    <Card elevation={3} className={classes.characterSheetCard}>
-                                        <CardActionArea className={classes.cardActionArea}>
-                                            <CardMedia
-                                                className={classes.cardMedia}
-                                                image={avatars.characterSheet[sheet.avatar]}
-                                            />
-                                        </CardActionArea>
-                                        <CardContent className={classes.cardContent}>
-                                            <Typography variant="h5">{sheet.characterName}</Typography>
-                                            <Typography variant="body1">Experience: {sheet.experience}</Typography>
-                                        </CardContent>
-                                        <CardActions className={classes.cardAction}>
-                                            <Button onClick={() => { this.props.history.push("/character-sheet/" + sheet._id) }}>View</Button>
-                                            <Button onClick={() => { this.enableCharacterSheetEditor(sheet) }}>Edit</Button>
-                                            <Button onClick={() => { this.props.deleteCharacterSheetForCurrentUser(sheet._id) }}>Delete</Button>
-                                        </CardActions>
-                                    </Card>
-                                </Grid>
-                            ))}
-                        </Grid>
+                    this.props.sheet.sheets.length === 0 ? // Should return message if user doesn't own sheets
+                        <Typography variant="body1" style={{ marginTop: 20 }}>Uh oh! It looks like you don't have any sheets!</Typography> :
+                        <div>
+                            {this.state.search !== "" && // Search prompt "Searching for ..."
+                                <div>
+                                    <Typography style={{ marginTop: 20 }}>Searching for "{this.state.search}"</Typography>
+                                    <Typography>{sortedSheets.length === 0 ? "No results found!" : "Found "+sortedSheets.length+" match!"}</Typography>
+                                </div>}
+                            <Grid className={classes.characterSheetList}
+                                container
+                                spacing={3}
+                                direction="row"
+                                justify="center"
+                                alignItems="center"
+                            >
+                                {sortedSheets.map((sheet, index) => (
+                                    <Grid item key={index}>
+                                        <Card elevation={3} className={classes.characterSheetCard}>
+                                            <CardActionArea className={classes.cardActionArea}>
+                                                <CardMedia
+                                                    className={classes.cardMedia}
+                                                    image={avatars.characterSheet[sheet.avatar]}
+                                                />
+                                            </CardActionArea>
+                                            <CardContent className={classes.cardContent}>
+                                                <Typography variant="h5">{sheet.characterName}</Typography>
+                                                <Typography variant="body1">Experience: {sheet.experience}</Typography>
+                                            </CardContent>
+                                            <CardActions className={classes.cardAction}>
+                                                <Button onClick={() => { this.props.history.push("/character-sheet/" + sheet._id) }}>View</Button>
+                                                <Button onClick={() => { this.enableCharacterSheetEditor(sheet) }}>Edit</Button>
+                                                <Button onClick={() => { this.props.deleteCharacterSheetForCurrentUser(sheet._id) }}>Delete</Button>
+                                            </CardActions>
+                                        </Card>
+                                    </Grid>
+                                ))}
+                            </Grid>
+                        </div>
                 }
-
                 <IconButton className={classes.createButton} onClick={this.enableCharacterSheetCreator.bind(this)} variant="outlined">
                     <AddIcon fontSize="large"></AddIcon>
                 </IconButton>
