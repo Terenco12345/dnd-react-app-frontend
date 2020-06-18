@@ -4,7 +4,6 @@ import { withRouter } from 'react-router';
 import { withStyles } from '@material-ui/styles'
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import AppBar from '@material-ui/core/AppBar';
-import axios from 'axios';
 import Button from '@material-ui/core/Button';
 import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
 import IconButton from '@material-ui/core/IconButton';
@@ -15,9 +14,10 @@ import React from 'react';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 
-import { setUser } from '../redux/actions/actions';
-import avatars from '../avatars';
+import avatars from '../../avatars';
 import SideDrawer from './SideDrawer'
+import { fetchCurrentUser, logoutCurrentUser } from './../../redux/actions/userActions';
+import { bindActionCreators } from 'redux';
 
 const styles = theme => ({
     root: {
@@ -43,66 +43,13 @@ class Header extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            profileAnchorElement: null,
             leftDrawerOpen: false
         }
     }
 
     componentDidMount() {
-        this.getCurrentUser();    
+        this.props.fetchCurrentUser();
     }
-
-    /**
-     * Tries to obtain the current user that is logged in, and will update the redux store of the current user.
-     * Obtians user by sending request to server, /current-user.
-     */
-    getCurrentUser = () => {
-        axios({
-            method: 'get',
-            withCredentials: true,
-            url: process.env.REACT_APP_SERVER_IP + '/current-user'
-        }).then((res) => {
-            this.props.setUser(res.data.user);
-        }).catch((err) => {
-            if (err) {
-                console.log("User not found in header.");
-            }
-        });
-    }
-
-    /**
-     * Log out by sending a request to server, /logout.
-     */
-    logOut() {
-        axios({
-            method: 'post',
-            withCredentials: true,
-            url: process.env.REACT_APP_SERVER_IP + '/logout'
-        }).then((res) => {
-            console.log("Successfully logged out user.");
-            this.props.setUser(null);
-            this.props.history.push('/');
-        }).catch((err) => {
-            if (err) {
-                this.props.setUser(null);
-                this.props.history.push('/');
-            }
-        });
-    }
-
-    /**
-     * Sets the profile mini-menu's anchor element. This enables the menu.
-     */
-    handleMenu = (event) => {
-        this.setState({ profileAnchorElement: event.currentTarget });
-    };
-
-    /**
-     * Sets the profile mini-menu's anchor to be null. This disables the menu.
-     */
-    handleClose = () => {
-        this.setState({ profileAnchorElement: null });
-    };
 
     /**
      * Method to open the side drawer.
@@ -136,46 +83,26 @@ class Header extends React.Component {
                                     aria-label="account of current user"
                                     aria-controls="menu-appbar"
                                     aria-haspopup="true"
-                                    onClick={this.handleMenu}
+                                    onClick={() => { this.props.history.push("/profile") }}
                                     color="inherit"
                                 >
                                     <Avatar src={avatars.profile[this.props.user.currentUser.avatar]}></Avatar>
                                 </IconButton>
-                                <Menu
-                                    id="menu-appbar"
-                                    anchorEl={this.state.profileAnchorElement}
-                                    anchorOrigin={{
-                                        vertical: 'top',
-                                        horizontal: 'right',
-                                    }}
-                                    keepMounted
-                                    transformOrigin={{
-                                        vertical: 'top',
-                                        horizontal: 'right',
-                                    }}
-                                    open={Boolean(this.state.profileAnchorElement)}
-                                    onClose={this.handleClose}
-                                >
-                                    <MenuItem onClick={() => { this.props.history.push("/profile") }}><AccountCircle />Profile</MenuItem>
-                                    <MenuItem onClick={this.logOut.bind(this)}><ExitToAppOutlinedIcon />Logout</MenuItem>
-                                </Menu>
                             </div>)
                             : (
                                 <div>
                                     <Button color="inherit" className={classes.login} onClick={() => {
                                         this.props.history.push("/register");
-                                        this.handleClose();
                                     }}>Register</Button>
                                     <Button color="inherit" className={classes.login} onClick={() => {
                                         this.props.history.push("/login");
-                                        this.handleClose();
                                     }}>Login</Button>
                                 </div>
                             )
                         }
                     </Toolbar>
 
-                    <SideDrawer handleDrawerClose={this.handleDrawerClose.bind(this)} open={this.state.leftDrawerOpen} handleLogOutClick={this.logOut.bind(this)}></SideDrawer>
+                    <SideDrawer handleDrawerClose={this.handleDrawerClose.bind(this)} open={this.state.leftDrawerOpen}></SideDrawer>
                 </AppBar>
             </div>
         );
@@ -185,8 +112,9 @@ const mapStateToProps = state => ({
     user: state.user
 })
 
-const mapDispatchToProps = dispatch => ({
-    setUser: user => dispatch(setUser(user))
-})
+const mapDispatchToProps = dispatch => bindActionCreators({
+    fetchCurrentUser: fetchCurrentUser,
+    logoutCurrentUser: logoutCurrentUser
+}, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(withStyles(styles)(Header)));

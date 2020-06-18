@@ -1,4 +1,4 @@
-import { SET_LIGHT_MODE } from "../actions/actionTypes";
+import { SET_LIGHT_MODE } from "../actions/lightModeActions";
 
 const initialState = {
     lightMode: false

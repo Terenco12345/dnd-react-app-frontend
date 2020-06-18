@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Typography, Paper } from '@material-ui/core';
+import { Typography, Paper, CircularProgress } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 import { withRouter } from 'react-router';
 import ReactJson from 'react-json-view'
@@ -50,7 +50,8 @@ class CharacterSheetPage extends React.Component {
         if (this.state.sheet === null) {
             return (
                 <div className={classes.container}>
-                    <Typography variant="h4">Sheet is loading...</Typography>
+                    <Typography variant="h3" gutterBottom>Character Sheet</Typography>
+                    <CircularProgress></CircularProgress>
                 </div>
             )
         } else {

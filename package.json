@@ -19,6 +19,8 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "redux": "^4.0.5",
+    "redux-persist": "^6.0.0",
+    "redux-thunk": "^2.3.0",
     "universal-cookie": "^4.0.3"
   },
   "scripts": {
@@ -41,5 +43,14 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.2",
+    "jest-enzyme": "^7.1.2",
+    "react-test-renderer": "^16.13.1",
+    "@types/jest": "^26.0.0",
+    "moxios": "^0.4.0",
+    "redux-mock-store": "^1.5.4"
   }
 }

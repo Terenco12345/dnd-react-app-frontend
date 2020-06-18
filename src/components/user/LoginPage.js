@@ -1,8 +1,7 @@
 import { connect } from 'react-redux';
-import { Paper, Typography, IconButton } from '@material-ui/core';
+import { Paper, Typography, IconButton, CircularProgress } from '@material-ui/core';
 import { withRouter, Redirect } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
-import axios from 'axios';
 import Button from '@material-ui/core/Button';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Grid from '@material-ui/core/Grid';
@@ -13,7 +12,8 @@ import TextField from '@material-ui/core/TextField';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
-import { setUser } from '../../redux/actions/actions';
+import { loginUser } from './../../redux/actions/userActions';
+import { bindActionCreators } from 'redux';
 
 const styles = theme => ({
   root: {
@@ -86,26 +86,7 @@ class LoginPage extends React.Component {
         passwordError: "",
       });
 
-      // Should send a login request to the server.
-      await axios({
-        method: 'post',
-        withCredentials: true,
-        url: process.env.REACT_APP_SERVER_IP + '/login',
-        data: {
-          email: this.state.email,
-          password: this.state.password,
-        }
-      }).then((res) => {
-        // Redirect to current-user
-        this.props.setUser(res.data.user);
-        this.props.history.push('/');
-      }).catch((err) => {
-        if (err) {
-          if (err.response !== undefined) {
-            this.setState({ overallError: err.response.data });
-          }
-        }
-      });
+      this.props.loginUser(this.state.email, this.state.password);
     } else {
       console.log("Login UI: Client side validation of form details failed.");
     }
@@ -139,6 +120,13 @@ class LoginPage extends React.Component {
   render() {
     const classes = this.props.classes;
 
+    var serverError = "";
+    if (this.props.user.loginError) {
+      if (this.props.user.loginError.message.includes("401")) {
+        serverError = "Incorrect email/password!";
+      }
+    }
+
     if (this.props.user.currentUser) {
       return (<Redirect to="/"></Redirect>);
     }
@@ -147,15 +135,14 @@ class LoginPage extends React.Component {
       <Paper className={classes.root}>
         <Typography variant="h4" align="center" style={{ marginBottom: "10px" }}>
           Login
-      </Typography>
+        </Typography>
         <form noValidate autoComplete="off">
-
           <Grid container
             direction="column"
             justify="center"
             alignItems="center"
           >
-            <FormHelperText error textalign="center">{this.state.overallError}</FormHelperText>
+            <FormHelperText error textalign="center">{serverError === "" ? this.state.overallError : serverError}</FormHelperText>
             <TextField
               id="email"
               label="Email"
@@ -190,7 +177,7 @@ class LoginPage extends React.Component {
               size="large"
               className={classes.textField}
               onClick={this.submitHandler}>
-              Login
+              {this.props.user.loginPending ? <CircularProgress color="inherit" size={25}></CircularProgress> : "Login"}
             </Button>
             <Link href="/register" color="secondary">Don't have an account? Register here!</Link>
           </Grid>
@@ -204,8 +191,8 @@ const mapStateToProps = state => ({
   user: state.user
 })
 
-const mapDispatchToProps = dispatch => ({
-  setUser: user => dispatch(setUser(user))
-})
+const mapDispatchToProps = dispatch => bindActionCreators({
+  loginUser: loginUser,
+}, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(withStyles(styles)(LoginPage)));

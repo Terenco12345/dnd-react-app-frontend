@@ -12,13 +12,15 @@ import LandingPage from "./components/landing/LandingPage";
 import RegisterPage from './components/user/RegisterPage';
 import LoginPage from './components/user/LoginPage';
 import ProfilePage from "./components/user/ProfilePage";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+import Header from "./components/global/Header";
+import Footer from "./components/global/Footer";
 import CharacterSheetGalleryPage from "./components/charactersheet/CharacterSheetGalleryPage";
 import { purple, deepPurple, indigo, lightBlue } from '@material-ui/core/colors';
-import { setUser, setLightMode } from './redux/actions/actions';
 import { connect } from 'react-redux';
 import CharacterSheetPage from './components/charactersheet/CharacterSheetPage';
+import { bindActionCreators } from 'redux';
+import { setLightMode } from './redux/actions/lightModeActions';
+import { fetchCurrentUser } from './redux/actions/userActions';
 
 // Light theme, for people in light mode
 const lightTheme = {
@@ -84,9 +86,9 @@ const mapStateToProps = state => ({
   lightMode: state.lightMode
 })
 
-const mapDispatchToProps = dispatch => ({
-  setUser: user => dispatch(setUser(user)),
-  setLightMode: enabled => dispatch(setLightMode(enabled))
-})
+const mapDispatchToProps = dispatch => bindActionCreators({
+  fetchCurrentUser: fetchCurrentUser,
+  setLightMode: setLightMode
+}, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

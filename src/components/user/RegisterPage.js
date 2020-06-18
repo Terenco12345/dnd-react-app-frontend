@@ -1,13 +1,13 @@
 import { connect } from 'react-redux';
-import { Paper, Typography, IconButton, TextField, Link, InputAdornment, Grid, FormHelperText, Button } from '@material-ui/core';
+import { Paper, Typography, IconButton, TextField, Link, InputAdornment, Grid, FormHelperText, Button, CircularProgress } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import React from 'react';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
-
-import { setUser } from '../../redux/actions/actions';
+import { registerUser } from '../../redux/actions/userActions';
+import { bindActionCreators } from 'redux';
 
 const validEmailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const validPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/;
@@ -114,8 +114,6 @@ class RegisterPage extends React.Component {
   submitHandler = async (event) => {
     event.preventDefault();
 
-    var successfulRegister = false;
-
     if (this.validateClientSide()) {
       this.setState({
         overallError: "",
@@ -126,48 +124,7 @@ class RegisterPage extends React.Component {
       });
 
       // Send register request
-      await axios({
-        method: 'post',
-        url: process.env.REACT_APP_SERVER_IP + '/register',
-        data: {
-          displayName: this.state.displayName,
-          email: this.state.email,
-          password: this.state.password,
-        }
-      }).then((res) => {
-        console.log(res);
-        console.log("Account successfully created!");
-        successfulRegister = true;
-      }).catch((err) => {
-        if (err && err.response.status === 400) {
-          console.log(err.response);
-          this.setState({ overallError: err.response.data });
-        }
-      });
-
-      // Login if user was successfully created
-      if (successfulRegister) {
-        await axios({
-          method: 'post',
-          withCredentials: true,
-          url: process.env.REACT_APP_SERVER_IP + '/login',
-          data: {
-            email: this.state.email,
-            password: this.state.password,
-          }
-        }).then((res) => {
-          // Redirect to current-user
-          this.props.setUser(res.data.user);
-          this.props.history.push('/');
-        }).catch((err) => {
-          if (err) {
-            if (err.response !== undefined) {
-              this.props.setUser(null);
-              this.setState({ overallError: err.response.data });
-            }
-          }
-        });
-      }
+      this.props.registerUser(this.state.displayName, this.state.email, this.state.password);
     } else {
       console.log("Register UI: Client side validation of form details failed.");
     }
@@ -251,9 +208,20 @@ class RegisterPage extends React.Component {
 
   render() {
     const classes = this.props.classes;
+    if (this.props.user.currentUser) {
+      this.props.history.push("/");
+    }
+
+    var serverError = "";
+    if (this.props.user.registerError) {
+      if (this.props.user.registerError.message.includes("400")) {
+        serverError = "User already exists with this email!";
+      }
+    }
+
     return (
       <Paper className={classes.root}>
-        <Typography variant="h4" align="center" style={{marginBottom:"10px"}}>
+        <Typography variant="h4" align="center" style={{ marginBottom: "10px" }}>
           Register new account
         </Typography>
         <form noValidate>
@@ -262,38 +230,40 @@ class RegisterPage extends React.Component {
             justify="center"
             alignItems="center"
           >
-            <FormHelperText error textalign="center">{this.state.overallError}</FormHelperText>
+            <FormHelperText error textalign="center">{serverError ==="" ? this.state.overallError : serverError}</FormHelperText>
             <TextField id="displayName" label="Display Name" variant="outlined" className={classes.textField} onChange={this.displayNameChangeHandler}
-            error = { this.state.displayNameError!=="" } helperText= { this.state.displayNameError }/>
+              error={this.state.displayNameError !== ""} helperText={this.state.displayNameError} />
             <TextField id="email" label="Email" variant="outlined" className={classes.textField} onChange={this.emailChangeHandler}
-            error = { this.state.emailError!=="" } helperText= { this.state.emailError }/>
-            <TextField id="password" label="Password" variant="outlined" className={classes.textField} 
-            type={this.state.showPassword ? 'text' : 'password'} 
-            onChange={this.passwordChangeHandler} 
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="start">
-                  <IconButton onClick={this.handleClickShowPassword}>
-                    {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }} 
-            error = { this.state.passwordError!=="" } helperText= { this.state.passwordError }/>
-            <TextField id="passwordConfirm" label="Confirm Password" variant="outlined" className={classes.textField} 
-            type={this.state.showPasswordConfirm ? 'text' : 'password'} 
-            onChange={this.passwordConfirmChangeHandler} 
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="start">
-                  <IconButton onClick={this.handleClickShowPasswordConfirm}>
-                    {this.state.showPasswordConfirm ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }} 
-            error = { this.state.passwordConfirmError!=="" } helperText= { this.state.passwordConfirmError }/>
-            <Button variant="contained" color="primary" component="span" size="large" className={classes.textField} onClick={this.submitHandler}>Register</Button>
+              error={this.state.emailError !== ""} helperText={this.state.emailError} />
+            <TextField id="password" label="Password" variant="outlined" className={classes.textField}
+              type={this.state.showPassword ? 'text' : 'password'}
+              onChange={this.passwordChangeHandler}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="start">
+                    <IconButton onClick={this.handleClickShowPassword}>
+                      {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              error={this.state.passwordError !== ""} helperText={this.state.passwordError} />
+            <TextField id="passwordConfirm" label="Confirm Password" variant="outlined" className={classes.textField}
+              type={this.state.showPasswordConfirm ? 'text' : 'password'}
+              onChange={this.passwordConfirmChangeHandler}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="start">
+                    <IconButton onClick={this.handleClickShowPasswordConfirm}>
+                      {this.state.showPasswordConfirm ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              error={this.state.passwordConfirmError !== ""} helperText={this.state.passwordConfirmError} />
+            <Button variant="contained" color="primary" component="span" size="large" className={classes.textField} onClick={this.submitHandler}>
+              {this.props.user.registerPending ? <CircularProgress color="white" size={25}></CircularProgress> : "Register"}
+            </Button>
             <Link href="/login" color="secondary">Already have an account? Click here.</Link>
           </Grid>
         </form>
@@ -306,8 +276,8 @@ const mapStateToProps = state => ({
   user: state.user
 })
 
-const mapDispatchToProps = dispatch => ({
-  setUser: user => dispatch(setUser(user))
-})
+const mapDispatchToProps = dispatch => bindActionCreators({
+  registerUser: registerUser
+}, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(withStyles(styles)(RegisterPage)));

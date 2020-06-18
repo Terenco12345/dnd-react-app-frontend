@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { Paper, Menu, Grid, Divider, Badge, Button } from '@material-ui/core';
+import { Paper, Menu, Grid, Divider, Badge, Button, CircularProgress } from '@material-ui/core';
 import { withRouter, Redirect } from 'react-router-dom';
 import { withStyles } from '@material-ui/styles';
 import Avatar from '@material-ui/core/Avatar';
@@ -9,8 +9,9 @@ import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import React from 'react';
 import Typography from "@material-ui/core/Typography";
 
-import { setUser } from '../../redux/actions/actions';
 import avatars from '../../avatars';
+import { fetchCurrentUser, updateCurrentUser } from './../../redux/actions/userActions';
+import { bindActionCreators } from 'redux';
 
 const styles = theme => ({
     root: {
@@ -152,12 +153,13 @@ class ProfilePage extends React.Component {
                                 </Grid>
                                 <Divider></Divider>
                                 <Avatar src={avatars.profile[this.state.selection]} style={{ margin: 'auto', marginTop: 50, marginBottom: 50, width: 100, height: 100 }}></Avatar>
-                                <Button variant="outlined" style={{ marginLeft: 8, marginRight: 8 }} onClick={this.updateAvatar}>
-                                    Update avatar
+                                <Button variant="outlined" style={{ marginLeft: 8, marginRight: 8 }} onClick={() => {
+                                    this.props.updateCurrentUser({avatar: this.state.selection});
+                                }}>
+                                   {this.props.user.updatePending ? <CircularProgress color="inherit" size={25}></CircularProgress> :  "Update avatar"}
                                 </Button>
                             </div>
                         </Menu>
-
                         <Typography variant="h2">
                             {user.displayName}
                         </Typography>
@@ -183,8 +185,9 @@ const mapStateToProps = state => ({
     user: state.user
 })
 
-const mapDispatchToProps = dispatch => ({
-    setUser: user => dispatch(setUser(user))
-})
+const mapDispatchToProps = dispatch => bindActionCreators({
+    fetchCurrentUser: fetchCurrentUser,
+    updateCurrentUser: updateCurrentUser
+}, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(withStyles(styles)(ProfilePage)));

@@ -1,3 +1,4 @@
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Drawer, List, Avatar, Typography, Divider, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import { withRouter } from 'react-router';
@@ -11,8 +12,9 @@ import HomeIcon from '@material-ui/icons/Home';
 import MeetingRoomOutlinedIcon from '@material-ui/icons/MeetingRoomOutlined';
 import React from 'react';
 
-import { setUser, setLightMode } from '../redux/actions/actions';
-import avatars from '../avatars'
+import { fetchCurrentUser, logoutCurrentUser } from './../../redux/actions/userActions';
+import { setLightMode } from '../../redux/actions/lightModeActions';
+import avatars from '../../avatars'
 
 const styles = theme => ({
     list: {
@@ -79,7 +81,7 @@ class SideDrawer extends React.Component {
                                 <ListItemIcon><AssignmentIndOutlinedIcon /></ListItemIcon>
                                 <ListItemText>My Character Sheets</ListItemText>
                             </ListItem>
-                            <ListItem button onClick={() => { this.props.handleLogOutClick(); this.props.handleDrawerClose() }}>
+                            <ListItem button onClick={() => { this.props.logoutCurrentUser(); this.props.handleDrawerClose() }}>
                                 <ListItemIcon><ExitToAppOutlinedIcon /></ListItemIcon>
                                 <ListItemText>Log Out</ListItemText>
                             </ListItem>
@@ -101,9 +103,9 @@ class SideDrawer extends React.Component {
                             </div>
                         )
                     }
-                    <ListItem button onClick={ () => {this.props.lightMode.enabled ? this.props.setLightMode(false) : this.props.setLightMode(true) }}>
+                    <ListItem button onClick={() => { this.props.lightMode.enabled ? this.props.setLightMode(false) : this.props.setLightMode(true) }}>
                         <ListItemIcon><Brightness7Icon /></ListItemIcon>
-                        <ListItemText>Change to {this.props.lightMode.enabled ? "Dark" : "Light"} Mode</ListItemText>
+                        <ListItemText>Change to {!this.props.lightMode.enabled ? "Dark" : "Light"} Mode</ListItemText>
                     </ListItem>
                 </List>
             </Drawer>
@@ -116,9 +118,10 @@ const mapStateToProps = state => ({
     lightMode: state.lightMode
 })
 
-const mapDispatchToProps = dispatch => ({
-    setUser: user => dispatch(setUser(user)),
-    setLightMode: enabled => dispatch(setLightMode(enabled))
-})
+const mapDispatchToProps = dispatch => bindActionCreators({
+    fetchCurrentUser: fetchCurrentUser,
+    logoutCurrentUser: logoutCurrentUser,
+    setLightMode: setLightMode
+}, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(withStyles(styles)(SideDrawer)));
