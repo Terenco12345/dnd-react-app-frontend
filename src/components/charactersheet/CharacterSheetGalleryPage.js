@@ -16,7 +16,7 @@ const styles = theme => ({
     root: {
         paddingTop: theme.spacing(5),
         paddingBottom: theme.spacing(5),
-        minHeight: '100%',
+        minHeight: 700,
         marginLeft: theme.spacing(2),
         marginRight: theme.spacing(2),
         textAlign: 'center',
@@ -231,9 +231,7 @@ class CharacterSheetGalleryPage extends React.Component {
                                 InputProps={{
                                     endAdornment: (
                                         <InputAdornment position="start">
-                                            <IconButton>
-                                                <SearchIcon></SearchIcon>
-                                            </IconButton>
+                                            <SearchIcon></SearchIcon>
                                         </InputAdornment>
                                     ),
                                 }}
@@ -241,7 +239,6 @@ class CharacterSheetGalleryPage extends React.Component {
                         </Grid>
                     </Grid>
                 </div>
-                <Divider></Divider>
                 {this.props.sheet.deletePending &&
                     <div style={{ marginTop: 20 }}>
                         <Typography variant="body1" gutterBottom>Deleting...</Typography>

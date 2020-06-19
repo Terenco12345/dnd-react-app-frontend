@@ -15,12 +15,9 @@ import { bindActionCreators } from 'redux';
 
 const styles = theme => ({
     root: {
-        minHeight: '100%'
-    },
-    topContainer: {
-        padding: '5%',
+        minHeight: 700,
+        paddingTop: theme.spacing(10),
         textAlign: 'center',
-        background: theme.palette.primary.light
     },
     button: {
         marginTop: '50px',
@@ -116,57 +113,55 @@ class ProfilePage extends React.Component {
         if (this.props.user.currentUser) {
             return (
                 <div className={classes.root}>
-                    <Paper className={classes.topContainer} square>
-                        <Badge
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'right',
-                            }}
-                            overlap="circle"
-                            badgeContent={(
-                                <IconButton className={classes.avatarEditButton} onClick={this.toggleImagePicker}>
-                                    <PhotoCameraIcon />
-                                </IconButton>
-                            )}
-                        >
-                            <Avatar className={classes.avatar} src={avatars.profile[this.props.user.currentUser.avatar]}></Avatar>
-                        </Badge>
+                    <Badge
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'right',
+                        }}
+                        overlap="circle"
+                        badgeContent={(
+                            <IconButton className={classes.avatarEditButton} onClick={this.toggleImagePicker}>
+                                <PhotoCameraIcon />
+                            </IconButton>
+                        )}
+                    >
+                        <Avatar className={classes.avatar} src={avatars.profile[this.props.user.currentUser.avatar]}></Avatar>
+                    </Badge>
 
-                        <Menu
-                            anchorEl={this.state.anchorElement}
-                            open={Boolean(this.state.anchorElement)}
-                            onClose={this.toggleImagePicker}
-                        >
-                            <div className={classes.avatarPicker}>
-                                <Typography variant="h6" align="center">
-                                    Pick an avatar
+                    <Menu
+                        anchorEl={this.state.anchorElement}
+                        open={Boolean(this.state.anchorElement)}
+                        onClose={this.toggleImagePicker}
+                    >
+                        <div className={classes.avatarPicker}>
+                            <Typography variant="h6" align="center">
+                                Pick an avatar
                                 </Typography>
-                                <Divider></Divider>
-                                <Grid className={classes.grid} container spacing={2} alignItems="center" justify="center">
-                                    {avatars.profile.map((avatarPath, index) => (
-                                        <Grid item key={index}>
-                                            <IconButton onClick={() => { this.handleAvatarSelection(index) }}>
-                                                <Avatar src={avatarPath}></Avatar>
-                                            </IconButton>
-                                        </Grid>
-                                    ))}
-                                </Grid>
-                                <Divider></Divider>
-                                <Avatar src={avatars.profile[this.state.selection]} style={{ margin: 'auto', marginTop: 50, marginBottom: 50, width: 100, height: 100 }}></Avatar>
-                                <Button variant="outlined" style={{ marginLeft: 8, marginRight: 8 }} onClick={() => {
-                                    this.props.updateCurrentUser({avatar: this.state.selection});
-                                }}>
-                                   {this.props.user.updatePending ? <CircularProgress color="inherit" size={25}></CircularProgress> :  "Update avatar"}
-                                </Button>
-                            </div>
-                        </Menu>
-                        <Typography variant="h2">
-                            {user.displayName}
-                        </Typography>
-                        <Typography variant="h4">
-                            {user.email}
-                        </Typography>
-                    </Paper>
+                            <Divider></Divider>
+                            <Grid className={classes.grid} container spacing={2} alignItems="center" justify="center">
+                                {avatars.profile.map((avatarPath, index) => (
+                                    <Grid item key={index}>
+                                        <IconButton onClick={() => { this.handleAvatarSelection(index) }}>
+                                            <Avatar src={avatarPath}></Avatar>
+                                        </IconButton>
+                                    </Grid>
+                                ))}
+                            </Grid>
+                            <Divider></Divider>
+                            <Avatar src={avatars.profile[this.state.selection]} style={{ margin: 'auto', marginTop: 50, marginBottom: 50, width: 100, height: 100 }}></Avatar>
+                            <Button variant="outlined" style={{ marginLeft: 8, marginRight: 8 }} onClick={() => {
+                                this.props.updateCurrentUser({ avatar: this.state.selection });
+                            }}>
+                                {this.props.user.updatePending ? <CircularProgress color="inherit" size={25}></CircularProgress> : "Update avatar"}
+                            </Button>
+                        </div>
+                    </Menu>
+                    <Typography variant="h2">
+                        {user.displayName}
+                    </Typography>
+                    <Typography variant="h4">
+                        {user.email}
+                    </Typography>
                 </div>
             );
         } else {

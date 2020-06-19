@@ -7,9 +7,10 @@ import avatars from '../../avatars';
 
 const styles = (theme) => ({
     root: {
+        minHeight: 700,
         margin: 'auto',
         width: "100%",
-        padding: theme.spacing(2),
+        padding: theme.spacing(5),
         backgroundRepeat: 'no-repeat'
     },
 

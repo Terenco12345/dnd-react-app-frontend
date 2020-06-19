@@ -14,9 +14,12 @@ const validPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/;
 
 const styles = theme => ({
   root: {
-    padding: '5%',
+    minHeight: 700,
+  },
+  register: {
+    padding: theme.spacing(10),
     margin: 'auto',
-    marginTop: '4%',
+    marginTop: theme.spacing(10),
     width: 800,
     maxWidth: '90%'
   },
@@ -220,54 +223,56 @@ class RegisterPage extends React.Component {
     }
 
     return (
-      <Paper className={classes.root}>
-        <Typography variant="h4" align="center" style={{ marginBottom: "10px" }}>
-          Register new account
+      <div className={classes.root}>
+        <Paper className={classes.register}>
+          <Typography variant="h4" align="center" style={{ marginBottom: "10px" }}>
+            Register new account
         </Typography>
-        <form noValidate>
-          <Grid container
-            direction="column"
-            justify="center"
-            alignItems="center"
-          >
-            <FormHelperText error textalign="center">{serverError ==="" ? this.state.overallError : serverError}</FormHelperText>
-            <TextField id="displayName" label="Display Name" variant="outlined" className={classes.textField} onChange={this.displayNameChangeHandler}
-              error={this.state.displayNameError !== ""} helperText={this.state.displayNameError} />
-            <TextField id="email" label="Email" variant="outlined" className={classes.textField} onChange={this.emailChangeHandler}
-              error={this.state.emailError !== ""} helperText={this.state.emailError} />
-            <TextField id="password" label="Password" variant="outlined" className={classes.textField}
-              type={this.state.showPassword ? 'text' : 'password'}
-              onChange={this.passwordChangeHandler}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="start">
-                    <IconButton onClick={this.handleClickShowPassword}>
-                      {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              error={this.state.passwordError !== ""} helperText={this.state.passwordError} />
-            <TextField id="passwordConfirm" label="Confirm Password" variant="outlined" className={classes.textField}
-              type={this.state.showPasswordConfirm ? 'text' : 'password'}
-              onChange={this.passwordConfirmChangeHandler}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="start">
-                    <IconButton onClick={this.handleClickShowPasswordConfirm}>
-                      {this.state.showPasswordConfirm ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              error={this.state.passwordConfirmError !== ""} helperText={this.state.passwordConfirmError} />
-            <Button variant="contained" color="primary" component="span" size="large" className={classes.textField} onClick={this.submitHandler}>
-              {this.props.user.registerPending ? <CircularProgress color="white" size={25}></CircularProgress> : "Register"}
-            </Button>
-            <Link href="/login" color="secondary">Already have an account? Click here.</Link>
-          </Grid>
-        </form>
-      </Paper>
+          <form noValidate>
+            <Grid container
+              direction="column"
+              justify="center"
+              alignItems="center"
+            >
+              <FormHelperText error textalign="center">{serverError === "" ? this.state.overallError : serverError}</FormHelperText>
+              <TextField id="displayName" label="Display Name" variant="outlined" className={classes.textField} onChange={this.displayNameChangeHandler}
+                error={this.state.displayNameError !== ""} helperText={this.state.displayNameError} />
+              <TextField id="email" label="Email" variant="outlined" className={classes.textField} onChange={this.emailChangeHandler}
+                error={this.state.emailError !== ""} helperText={this.state.emailError} />
+              <TextField id="password" label="Password" variant="outlined" className={classes.textField}
+                type={this.state.showPassword ? 'text' : 'password'}
+                onChange={this.passwordChangeHandler}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="start">
+                      <IconButton onClick={this.handleClickShowPassword}>
+                        {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                error={this.state.passwordError !== ""} helperText={this.state.passwordError} />
+              <TextField id="passwordConfirm" label="Confirm Password" variant="outlined" className={classes.textField}
+                type={this.state.showPasswordConfirm ? 'text' : 'password'}
+                onChange={this.passwordConfirmChangeHandler}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="start">
+                      <IconButton onClick={this.handleClickShowPasswordConfirm}>
+                        {this.state.showPasswordConfirm ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                error={this.state.passwordConfirmError !== ""} helperText={this.state.passwordConfirmError} />
+              <Button variant="contained" color="primary" component="span" size="large" className={classes.textField} onClick={this.submitHandler}>
+                {this.props.user.registerPending ? <CircularProgress color="white" size={25}></CircularProgress> : "Register"}
+              </Button>
+              <Link href="/login" color="secondary">Already have an account? Click here.</Link>
+            </Grid>
+          </form>
+        </Paper>
+      </div>
     );
   }
 }

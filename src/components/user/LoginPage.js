@@ -17,9 +17,12 @@ import { bindActionCreators } from 'redux';
 
 const styles = theme => ({
   root: {
-    padding: '5%',
+    minHeight: 700,
+  },
+  login: {
+    padding: theme.spacing(10),
     margin: 'auto',
-    marginTop: '4%',
+    marginTop: theme.spacing(10),
     width: 800,
     maxWidth: '90%'
   },
@@ -132,57 +135,59 @@ class LoginPage extends React.Component {
     }
 
     return (
-      <Paper className={classes.root}>
-        <Typography variant="h4" align="center" style={{ marginBottom: "10px" }}>
-          Login
+      <div className={classes.root}>
+        <Paper className={classes.login}>
+          <Typography variant="h4" align="center" style={{ marginBottom: "10px" }}>
+            Login
         </Typography>
-        <form noValidate autoComplete="off">
-          <Grid container
-            direction="column"
-            justify="center"
-            alignItems="center"
-          >
-            <FormHelperText error textalign="center">{serverError === "" ? this.state.overallError : serverError}</FormHelperText>
-            <TextField
-              id="email"
-              label="Email"
-              variant="outlined"
-              className={classes.textField}
-              onChange={this.emailChangeHandler}
-              error={this.state.emailError !== ""} helperText={this.state.emailError} />
-            <TextField
-              id="password"
-              label="Password"
-              variant="outlined"
-              className={classes.textField}
-              type={this.state.showPassword ? 'text' : 'password'}
-              onChange={this.passwordChangeHandler}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="start">
-                    <IconButton onClick={this.handleClickShowPassword}>
-                      {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              error={this.state.passwordError !== ""}
-              helperText={this.state.passwordError}
-            />
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              component="span"
-              size="large"
-              className={classes.textField}
-              onClick={this.submitHandler}>
-              {this.props.user.loginPending ? <CircularProgress color="inherit" size={25}></CircularProgress> : "Login"}
-            </Button>
-            <Link href="/register" color="secondary">Don't have an account? Register here!</Link>
-          </Grid>
-        </form>
-      </Paper>
+          <form noValidate autoComplete="off">
+            <Grid container
+              direction="column"
+              justify="center"
+              alignItems="center"
+            >
+              <FormHelperText error textalign="center">{serverError === "" ? this.state.overallError : serverError}</FormHelperText>
+              <TextField
+                id="email"
+                label="Email"
+                variant="outlined"
+                className={classes.textField}
+                onChange={this.emailChangeHandler}
+                error={this.state.emailError !== ""} helperText={this.state.emailError} />
+              <TextField
+                id="password"
+                label="Password"
+                variant="outlined"
+                className={classes.textField}
+                type={this.state.showPassword ? 'text' : 'password'}
+                onChange={this.passwordChangeHandler}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="start">
+                      <IconButton onClick={this.handleClickShowPassword}>
+                        {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                error={this.state.passwordError !== ""}
+                helperText={this.state.passwordError}
+              />
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                component="span"
+                size="large"
+                className={classes.textField}
+                onClick={this.submitHandler}>
+                {this.props.user.loginPending ? <CircularProgress color="inherit" size={25}></CircularProgress> : "Login"}
+              </Button>
+              <Link href="/register" color="secondary">Don't have an account? Register here!</Link>
+            </Grid>
+          </form>
+        </Paper>
+      </div>
     );
   }
 }
