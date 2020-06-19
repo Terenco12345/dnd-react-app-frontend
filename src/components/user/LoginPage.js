@@ -20,7 +20,8 @@ const styles = theme => ({
     minHeight: 700,
   },
   login: {
-    padding: theme.spacing(10),
+    paddingTop: theme.spacing(10),
+    paddingBottom: theme.spacing(10),
     margin: 'auto',
     marginTop: theme.spacing(10),
     width: 800,
@@ -139,7 +140,7 @@ class LoginPage extends React.Component {
         <Paper className={classes.login}>
           <Typography variant="h4" align="center" style={{ marginBottom: "10px" }}>
             Login
-        </Typography>
+          </Typography>
           <form noValidate autoComplete="off">
             <Grid container
               direction="column"

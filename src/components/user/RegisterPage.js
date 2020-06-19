@@ -17,7 +17,8 @@ const styles = theme => ({
     minHeight: 700,
   },
   register: {
-    padding: theme.spacing(10),
+    paddingTop: theme.spacing(10),
+    paddingBottom: theme.spacing(10),
     margin: 'auto',
     marginTop: theme.spacing(10),
     width: 800,
