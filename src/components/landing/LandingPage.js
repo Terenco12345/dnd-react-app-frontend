@@ -12,7 +12,7 @@ import { CircularProgress } from '@material-ui/core';
 const styles = theme => ({
   root: {
     paddingTop: '10%',
-    minHeight: 1000,
+    minHeight: '100%',
     textAlign: 'center',
   },
   button: {

@@ -15,7 +15,7 @@ import { bindActionCreators } from 'redux';
 
 const styles = theme => ({
     root: {
-
+        minHeight: '100%'
     },
     topContainer: {
         padding: '5%',
@@ -166,7 +166,6 @@ class ProfilePage extends React.Component {
                         <Typography variant="h4">
                             {user.email}
                         </Typography>
-                        <Button className={classes.textEditButton} variant="outlined">Edit Information</Button>
                     </Paper>
                 </div>
             );

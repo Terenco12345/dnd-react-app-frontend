@@ -14,9 +14,9 @@ import CharacterSheetForm from './CharacterSheetForm';
 
 const styles = theme => ({
     root: {
-        paddingTop: '4%',
-        paddingBottom: '4%',
-        minHeight: 800,
+        paddingTop: theme.spacing(5),
+        paddingBottom: theme.spacing(5),
+        minHeight: '100%',
         marginLeft: theme.spacing(2),
         marginRight: theme.spacing(2),
         textAlign: 'center',
