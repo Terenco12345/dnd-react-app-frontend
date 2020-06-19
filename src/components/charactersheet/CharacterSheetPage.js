@@ -8,9 +8,10 @@ import avatars from '../../avatars';
 const styles = (theme) => ({
     root: {
         minHeight: 700,
+        paddingTop: theme.spacing(2),
+        paddingBottom: theme.spacing(2),
         margin: 'auto',
         width: "100%",
-        padding: theme.spacing(5),
         backgroundRepeat: 'no-repeat'
     },
 
@@ -19,7 +20,6 @@ const styles = (theme) => ({
         textAlign: 'left',
         width: 1200,
         maxWidth: '98%',
-        padding: theme.spacing(2),
     },
 
     multilineInfo: {
@@ -153,7 +153,7 @@ class CharacterSheetPage extends React.Component {
         } else {
             return (
                 <div className={classes.root} style={avatars.characterSheetBackgrounds[sheet.avatar]}>
-                    <Paper className={classes.container}>
+                    <div className={classes.container}>
                         <Paper className={classes.titleCardTitle}>
                             <Typography variant="h1">{sheet.characterName}</Typography>
                         </Paper>
@@ -336,7 +336,7 @@ class CharacterSheetPage extends React.Component {
                                 })}
                             </div>
                         </Paper>
-                    </Paper>
+                    </div>
                 </div>
             );
         }
