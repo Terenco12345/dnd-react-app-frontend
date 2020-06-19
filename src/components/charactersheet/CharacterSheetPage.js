@@ -146,7 +146,7 @@ class CharacterSheetPage extends React.Component {
 
         if (sheet === null) {
             return (
-                <div style={{ textAlign: 'center', marginTop: 40 }}>
+                <div style={{ textAlign: 'center', marginTop: 40, minHeight: 700 }}>
                     <CircularProgress></CircularProgress>
                 </div>
             )
