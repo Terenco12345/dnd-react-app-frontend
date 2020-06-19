@@ -40,8 +40,8 @@ class CharacterSheetForm extends React.Component {
         this.state = { ...props.formSheet, detailsError: "", started: false };
     }
 
-    componentDidUpdate(){
-        if(this.state.started && !this.props.sheet.createPending && !this.props.sheet.updatePending){
+    componentDidUpdate() {
+        if (this.state.started && !this.props.sheet.createPending && !this.props.sheet.updatePending) {
             this.props.handleClose();
         }
     }
@@ -86,10 +86,10 @@ class CharacterSheetForm extends React.Component {
             maxHealth: this.state.health.maxHealth
         };
         characterSheet.hitDice = {
-            currentHitDice: this.state.hitDiceMax,
-            maxHitDice: this.state.hitDice.hitDiceMax,
+            currentHitDice: this.state.hitDice.currentHitDice,
+            maxHitDice: this.state.hitDice.maxHitDice,
             hitDiceType: this.state.hitDice.hitDiceType
-        };
+        }
         characterSheet.stats = {
             strength: this.state.stats.strength,
             dexterity: this.state.stats.dexterity,
@@ -150,7 +150,6 @@ class CharacterSheetForm extends React.Component {
                         spacing={2}
                         direction="row"
                         alignItems="center"
-
                     >
                         <Grid item>
                             <TextField
@@ -220,7 +219,35 @@ class CharacterSheetForm extends React.Component {
                         </Grid>
                         <Grid item>
                             <TextField
-                                label="HP"
+                                label="AC"
+                                type="number"
+                                value={this.state.armourClass}
+                                style={{ maxWidth: 80 }}
+                                onChange={(event) => { this.setState({ armourClass: parseInt(event.target.value) }) }}
+                            />
+                        </Grid>
+                    </Grid>
+                    <Grid container
+                        spacing={2}
+                        direction="row"
+                        alignItems="center"
+                        style={{ marginTop: 20 }}
+                    >
+                        <Grid item>
+                            <TextField
+                                label="Current HP"
+                                type="number"
+                                value={this.state.health.currentHealth}
+                                style={{ maxWidth: 80 }}
+                                onChange={(event) => {
+                                    var newValue = parseInt(event.target.value);
+                                    this.setState((initialState) => ({ health: { ...initialState.health, currentHealth: newValue } }))
+                                }}
+                            />
+                        </Grid>
+                        <Grid item>
+                            <TextField
+                                label="Max HP"
                                 type="number"
                                 value={this.state.health.maxHealth}
                                 style={{ maxWidth: 80 }}
@@ -230,18 +257,40 @@ class CharacterSheetForm extends React.Component {
                                 }}
                             />
                         </Grid>
+                    </Grid>
+                    <Grid container
+                        spacing={2}
+                        direction="row"
+                        alignItems="center"
+                        style={{ marginTop: 20 }}
+                    >
                         <Grid item>
                             <TextField
-                                label="AC"
+                                label="Current Hit Dice"
                                 type="number"
-                                value={this.state.armourClass}
-                                style={{ maxWidth: 80 }}
-                                onChange={(event) => { this.setState({ armourClass: parseInt(event.target.value) }) }}
+                                value={this.state.hitDice.currentHitDice}
+                                style={{ maxWidth: 120 }}
+                                onChange={(event) => {
+                                    var newValue = parseInt(event.target.value);
+                                    this.setState((initialState) => ({ hitDice: { ...initialState.hitDice, currentHitDice: newValue } }))
+                                }}
                             />
                         </Grid>
                         <Grid item>
-                            <FormControl style={{ minWidth: 100 }}>
-                                <InputLabel>Hit Dice</InputLabel>
+                            <TextField
+                                label="Max Hit Dice"
+                                type="number"
+                                value={this.state.hitDice.maxHitDice}
+                                style={{ maxWidth: 120 }}
+                                onChange={(event) => {
+                                    var newValue = parseInt(event.target.value);
+                                    this.setState((initialState) => ({ hitDice: { ...initialState.hitDice, maxHitDice: newValue } }))
+                                }}
+                            />
+                        </Grid>
+                        <Grid item>
+                            <FormControl style={{ minWidth: 120 }}>
+                                <InputLabel>Hit Dice Type</InputLabel>
                                 <Select
                                     value={this.state.hitDice.hitDiceType}
                                     onChange={(event) => {
@@ -259,6 +308,7 @@ class CharacterSheetForm extends React.Component {
                             </FormControl>
                         </Grid>
                     </Grid>
+
 
                     <Typography variant="h5" style={{ marginTop: 50 }} gutterBottom>Stats</Typography>
                     <Grid container
@@ -373,14 +423,14 @@ class CharacterSheetForm extends React.Component {
                                         } else {
                                             this.props.updateCharacterSheetForCurrentUser(this.state._id, this.createCharacterSheetFromState());
                                         }
-                                        this.setState({started: true})
+                                        this.setState({ started: true })
                                     }
                                 }}
                                 color="primary"
                                 variant="contained"
                             >
-                                {(this.props.sheet.createPending || this.props.sheet.updatePending) ? <CircularProgress color="inherit" size={25}/> : this.props.type + " Character"}
-                                </Button>
+                                {(this.props.sheet.createPending || this.props.sheet.updatePending) ? <CircularProgress color="inherit" size={25} /> : this.props.type + " Character"}
+                            </Button>
                         </Grid>
                         <Grid item>
                             <Button onClick={() => {
@@ -391,7 +441,7 @@ class CharacterSheetForm extends React.Component {
                         </Grid>
                     </Grid>
                 </div>
-            </Dialog>
+            </Dialog >
         );
     }
 }

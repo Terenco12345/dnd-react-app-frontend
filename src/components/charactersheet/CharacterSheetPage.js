@@ -3,21 +3,42 @@ import axios from 'axios';
 import { Typography, Paper, CircularProgress, Grid, Divider, TextField, FormControlLabel, Checkbox } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 import { withRouter } from 'react-router';
-import ReactJson from 'react-json-view'
+import avatars from '../../avatars';
 
 const styles = (theme) => ({
-    container: {
-        textAlign: 'left',
+    root: {
         margin: 'auto',
-        marginTop: theme.spacing(10),
-        marginBottom: theme.spacing(10),
-        width: 1000,
-        maxWidth: '90%',
+        width: "100%",
+        padding: theme.spacing(2),
+        backgroundRepeat: 'no-repeat'
+    },
+
+    container: {
+        margin: 'auto',
+        textAlign: 'left',
+        width: 1200,
+        maxWidth: '98%',
+        padding: theme.spacing(2),
     },
 
     multilineInfo: {
         padding: theme.spacing(4),
-        marginBottom: theme.spacing(2)
+    },
+
+    titleCardTitle: {
+        width: '100%',
+        height: 200,
+        backgroundPosition: 'center',
+        borderRadius: 10,
+        textAlign: 'center',
+        height: '100%',
+        paddingTop: theme.spacing(4),
+        paddingBottom: theme.spacing(4),
+        marginBottom: theme.spacing(2),
+    },
+
+    section: {
+        marginBottom: theme.spacing(10)
     }
 })
 
@@ -130,192 +151,190 @@ class CharacterSheetPage extends React.Component {
             )
         } else {
             return (
-                <div className={classes.container}>
-                    <Typography variant="h3" style={{ marginBottom: 20 }} gutterBottom>{sheet.characterName}</Typography>
-                    <Divider style={{ marginBottom: 20 }}></Divider>
-
-                    <Paper variant="outlined" className={classes.multilineInfo}>
-                        <Typography variant="h5" style={{ marginBottom: 20 }} gutterBottom>Details</Typography>
-                        <Divider style={{ marginBottom: 20 }}></Divider>
-                        <Grid container
-                            spacing={2}
-                            direction="row"
-                            alignItems="center"
-
-                        >
-                            <Grid item>
-                                <TextField
-                                    label="Character Name"
-                                    value={sheet.characterName}
-                                    onChange={() => { }}
-                                />
-                            </Grid>
-                            <Grid item>
-                                <TextField
-                                    label="Race"
-                                    value={sheet.race}
-                                    onChange={() => { }}
-                                />
-                            </Grid>
-                            <Grid item>
-                                <TextField
-                                    label="Background"
-                                    value={sheet.background}
-                                    onChange={() => { }}
-                                />
-                            </Grid>
-                            <Grid item>
-                                <TextField
-                                    label="Alignment"
-                                    value={sheet.alignment}
-                                    onChange={() => { }}
-                                />
-                            </Grid>
-                        </Grid>
-
-
-                        <Grid container
-                            spacing={2}
-                            direction="row"
-                            alignItems="center"
-                            style={{ marginTop: 20 }}
-                        >
-                            <Grid item>
-                                <TextField
-                                    label="Class"
-                                    value={sheet.class}
-                                    onChange={() => { }}
-                                />
-                            </Grid>
-                            <Grid item>
-                                <TextField
-                                    label="Level"
-                                    value={this.calculateLevelFromExperience(sheet.experience)}
-                                    style={{ maxWidth: 50 }}
-                                    onChange={() => { }}
-                                />
-                            </Grid>
-                            <Grid item>
-                                <TextField
-                                    label="Experience"
-                                    value={sheet.experience}
-                                    style={{ maxWidth: 100 }}
-                                    onChange={() => { }}
-                                />
-                            </Grid>
-                            <Grid item>
-                                <TextField
-                                    label="HP"
-                                    value={sheet.health.currentHealth + "/" + sheet.health.maxHealth}
-                                    style={{ maxWidth: 120 }}
-                                    onChange={() => { }}
-                                />
-                            </Grid>
-                            <Grid item>
-                                <TextField
-                                    label="AC"
-                                    value={sheet.armourClass}
-                                    style={{ maxWidth: 80 }}
-                                    onChange={() => { }}
-                                />
-                            </Grid>
-                            <Grid item>
-                                <TextField
-                                    label="Hit Dice Type"
-                                    value={sheet.hitDice.currentHitDice + "/" + this.calculateLevelFromExperience(sheet.experience) + " D" + sheet.hitDice.hitDiceType}
-                                    onChange={() => { }}
-                                />
-                            </Grid>
-                        </Grid>
-                    </Paper>
-                    <Paper variant="outlined" className={classes.multilineInfo}>
-                        <Typography variant="h5" style={{ marginBottom: 20 }} gutterBottom>Stats</Typography>
-                        <Divider style={{ marginBottom: 20 }}></Divider>
-                        <Grid container
-                            spacing={2}
-                            direction="row"
-                            alignItems="center"
-                        >
-                            {["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"].map((stat, index) => (
-                                <Grid item key={index}>
-                                    <TextField
-                                        label={stat.substring(0, 3).toUpperCase()}
-                                        value={sheet.stats[stat] + this.getModifierStringRepresentation(this.getStatModifier(stat))}
-                                        style={{ maxWidth: 80 }}
-                                    />
+                <div className={classes.root} style={avatars.characterSheetBackgrounds[sheet.avatar]}>
+                    <Paper className={classes.container}>
+                        <Paper className={classes.titleCardTitle}>
+                            <Typography variant="h1">{sheet.characterName}</Typography>
+                        </Paper>
+                        <Paper className={classes.multilineInfo}>
+                            <div className={classes.section}>
+                                <Typography variant="h5">Details</Typography>
+                                <Divider style={{ marginBottom: 20 }}></Divider>
+                                <Grid container
+                                    spacing={2}
+                                    direction="row"
+                                    alignItems="center"
+                                >
+                                    <Grid item>
+                                        <TextField
+                                            label="Character Name"
+                                            value={sheet.characterName}
+                                            onChange={() => { }}
+                                        />
+                                    </Grid>
+                                    <Grid item>
+                                        <TextField
+                                            label="Race"
+                                            value={sheet.race}
+                                            onChange={() => { }}
+                                        />
+                                    </Grid>
+                                    <Grid item>
+                                        <TextField
+                                            label="Background"
+                                            value={sheet.background}
+                                            onChange={() => { }}
+                                        />
+                                    </Grid>
+                                    <Grid item>
+                                        <TextField
+                                            label="Alignment"
+                                            value={sheet.alignment}
+                                            onChange={() => { }}
+                                        />
+                                    </Grid>
                                 </Grid>
-                            ))}
-                        </Grid>
-                    </Paper>
-
-                    <Paper variant="outlined" className={classes.multilineInfo}>
-                        <Typography variant="h5" style={{ marginBottom: 20 }} gutterBottom>Skills</Typography>
-                        <Divider style={{ marginBottom: 20 }}></Divider>
-                        <Grid container
-                            spacing={1}
-                            direction="row"
-                            alignItems="center"
-                            style={{ maxWidth: 800 }}
-                        >
-                            {["acrobatics", "animalHandling", "arcana", "athletics",
-                                "deception", "history", "insight", "intimidation",
-                                "investigation", "nature", "perception",
-                                "performance", "persuasion", "religion", "sleightOfHand",
-                                "stealth", "survival"
-                            ].map((skill, index) => (
-                                <Grid item key={index} xs={6}>
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox checked={sheet.skills[skill]}
-                                                onChange={() => { }}
-                                                name={skill}
+                                <Grid container
+                                    spacing={2}
+                                    direction="row"
+                                    alignItems="center"
+                                    style={{ marginTop: 20 }}
+                                >
+                                    <Grid item>
+                                        <TextField
+                                            label="Class"
+                                            value={sheet.class}
+                                            onChange={() => { }}
+                                        />
+                                    </Grid>
+                                    <Grid item>
+                                        <TextField
+                                            label="Level"
+                                            value={this.calculateLevelFromExperience(sheet.experience)}
+                                            style={{ maxWidth: 50 }}
+                                            onChange={() => { }}
+                                        />
+                                    </Grid>
+                                    <Grid item>
+                                        <TextField
+                                            label="Experience"
+                                            value={sheet.experience}
+                                            style={{ maxWidth: 100 }}
+                                            onChange={() => { }}
+                                        />
+                                    </Grid>
+                                    <Grid item>
+                                        <TextField
+                                            label="HP"
+                                            value={sheet.health.currentHealth + "/" + sheet.health.maxHealth}
+                                            style={{ maxWidth: 120 }}
+                                            onChange={() => { }}
+                                        />
+                                    </Grid>
+                                    <Grid item>
+                                        <TextField
+                                            label="AC"
+                                            value={sheet.armourClass}
+                                            style={{ maxWidth: 80 }}
+                                            onChange={() => { }}
+                                        />
+                                    </Grid>
+                                    <Grid item>
+                                        <TextField
+                                            label="Hit Dice Type"
+                                            value={sheet.hitDice.currentHitDice + "/" + sheet.hitDice.maxHitDice + " D" + sheet.hitDice.hitDiceType}
+                                            onChange={() => { }}
+                                        />
+                                    </Grid>
+                                </Grid>
+                            </div>
+                            <div className={classes.section}>
+                                <Typography variant="h5">Stats</Typography>
+                                <Divider style={{ marginBottom: 20 }}></Divider>
+                                <Grid container
+                                    spacing={2}
+                                    direction="row"
+                                    alignItems="center"
+                                >
+                                    {["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"].map((stat, index) => (
+                                        <Grid item key={index}>
+                                            <TextField
+                                                label={stat.substring(0, 3).toUpperCase()}
+                                                value={sheet.stats[stat] + this.getModifierStringRepresentation(this.getStatModifier(stat))}
+                                                style={{ maxWidth: 80 }}
                                             />
-                                        }
-                                        label={
-                                            skill
-                                                // insert a space before all caps
-                                                .replace(/([A-Z])/g, ' $1')
-                                                // uppercase the first character
-                                                .replace(/^./, function (str) { return str.toUpperCase(); })
-                                            + (sheet.skills[skill] && (" " + this.getModifierStringRepresentation(this.getSkillModifier(skill))))
-                                        }
-                                    />
+                                        </Grid>
+                                    ))}
                                 </Grid>
-                            ))}
-                        </Grid>
-                    </Paper>
+                            </div>
+                            <div className={classes.section}>
+                                <Typography variant="h5">Skills</Typography>
+                                <Divider style={{ marginBottom: 20 }}></Divider>
+                                <Grid container
+                                    spacing={1}
+                                    direction="row"
+                                    alignItems="center"
+                                    style={{ maxWidth: 800 }}
+                                >
+                                    {["acrobatics", "animalHandling", "arcana", "athletics",
+                                        "deception", "history", "insight", "intimidation",
+                                        "investigation", "nature", "perception",
+                                        "performance", "persuasion", "religion", "sleightOfHand",
+                                        "stealth", "survival"
+                                    ].map((skill, index) => (
+                                        <Grid item key={index} xs={6}>
+                                            <FormControlLabel
+                                                control={
+                                                    <Checkbox checked={sheet.skills[skill]}
+                                                        onChange={() => { }}
+                                                        name={skill}
+                                                        disableRipple
+                                                    />
+                                                }
+                                                label={
+                                                    skill
+                                                        // insert a space before all caps
+                                                        .replace(/([A-Z])/g, ' $1')
+                                                        // uppercase the first character
+                                                        .replace(/^./, function (str) { return str.toUpperCase(); })
+                                                    + (sheet.skills[skill] && (" " + this.getModifierStringRepresentation(this.getSkillModifier(skill))))
+                                                }
+                                            />
+                                        </Grid>
+                                    ))}
+                                </Grid>
+                            </div>
+                            <div className={classes.section}>
+                                <Typography variant="h5">Description</Typography>
+                                <Divider style={{ marginBottom: 20 }}></Divider>
+                                <Typography>{sheet.description}</Typography>
+                            </div>
 
-                    <Paper variant="outlined" className={classes.multilineInfo}>
-                        <Typography variant="h5" gutterBottom>Description</Typography>
-                        <Divider style={{ marginBottom: 20 }}></Divider>
-                        <Typography>{sheet.description}</Typography>
-                    </Paper>
+                            <div className={classes.section}>
+                                <Typography variant="h5">Proficiencies</Typography>
+                                <Divider style={{ marginBottom: 20 }}></Divider>
+                                <Typography>{sheet.proficiencies}</Typography>
+                            </div>
 
+                            <div className={classes.section}>
+                                <Typography variant="h5">Equipment</Typography>
+                                <Divider style={{ marginBottom: 20 }}></Divider>
+                                <Typography>{sheet.equipment}</Typography>
+                            </div>
 
-                    <Paper variant="outlined" className={classes.multilineInfo}>
-                        <Typography variant="h5" gutterBottom>Proficiencies</Typography>
-                        <Divider style={{ marginBottom: 20 }}></Divider>
-                        <Typography>{sheet.proficiencies}</Typography>
-                    </Paper>
-
-
-                    <Paper variant="outlined" className={classes.multilineInfo}>
-                        <Typography variant="h5" gutterBottom>Equipment</Typography>
-                        <Divider style={{ marginBottom: 20 }}></Divider>
-                        <Typography>{sheet.equipment}</Typography>
-                    </Paper>
-
-                    <Paper variant="outlined" className={classes.multilineInfo}>
-                        <Typography variant="h5">Feats, Spells and Traits</Typography>
-                        <Divider style={{ marginBottom: 20 }}></Divider>
-                        {sheet.featsAndSpells.map((feat, index) => {
-                            return (
-                                <div key={index} style={{ marginBottom: 20 }}>
-                                    <Typography variant="h6">{feat.name}</Typography>
-                                    <Typography variant="body1">{feat.description}</Typography>
-                                </div>
-                            )
-                        })}
+                            <div className={classes.section}>
+                                <Typography variant="h5">Feats, Spells and Traits</Typography>
+                                <Divider style={{ marginBottom: 20 }}></Divider>
+                                {sheet.featsAndSpells.map((feat, index) => {
+                                    return (
+                                        <div key={index} style={{ marginBottom: 20 }}>
+                                            <Typography variant="h6">{feat.name}</Typography>
+                                            <Typography variant="body1">{feat.description}</Typography>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </Paper>
                     </Paper>
                 </div>
             );

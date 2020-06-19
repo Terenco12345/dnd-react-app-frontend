@@ -86,7 +86,8 @@ const emptySheet = {
     experience: 0,
     hitDice: {
         hitDiceType: 4,
-        hitDiceMax: 0,
+        currentHitDice: 1,
+        maxhitDice: 1,
     },
     description: "",
     equipment: "",
