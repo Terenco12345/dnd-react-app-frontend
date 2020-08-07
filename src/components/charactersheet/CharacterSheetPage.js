@@ -74,7 +74,7 @@ class CharacterSheetPage extends React.Component {
      * @param statName name (e.g. strength)
      */
     getStatModifier(statName) {
-        return Math.floor((this.state.stats[statName] - 10) / 2);
+        return Math.floor((this.state.sheet.stats[statName] - 10) / 2);
     }
 
     /**
