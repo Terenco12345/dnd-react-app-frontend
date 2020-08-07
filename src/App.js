@@ -1,26 +1,28 @@
-import { createMuiTheme, responsiveFontSizes, ThemeProvider } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import React from 'react';
-
 import {
   BrowserRouter,
   Switch,
   Route,
 } from "react-router-dom";
 
+import { createMuiTheme, responsiveFontSizes, ThemeProvider } from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import { purple, deepPurple, indigo, lightBlue } from '@material-ui/core/colors';
+
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { setLightMode } from './redux/actions/lightModeActions';
+import { fetchCurrentUser } from './redux/actions/userActions';
+
+import CharacterSheetPage from './components/charactersheet/CharacterSheetPage';
+import CharacterSheetGalleryPage from "./components/charactersheet/CharacterSheetGalleryPage";
 import LandingPage from "./components/landing/LandingPage";
 import RegisterPage from './components/user/RegisterPage';
 import LoginPage from './components/user/LoginPage';
 import ProfilePage from "./components/user/ProfilePage";
+import DiceRollerPage from "./components/diceroller/DiceRollerPage";
 import Header from "./components/global/Header";
 import Footer from "./components/global/Footer";
-import CharacterSheetGalleryPage from "./components/charactersheet/CharacterSheetGalleryPage";
-import { purple, deepPurple, indigo, lightBlue } from '@material-ui/core/colors';
-import { connect } from 'react-redux';
-import CharacterSheetPage from './components/charactersheet/CharacterSheetPage';
-import { bindActionCreators } from 'redux';
-import { setLightMode } from './redux/actions/lightModeActions';
-import { fetchCurrentUser } from './redux/actions/userActions';
 
 // Light theme, for people in light mode
 const lightTheme = {
@@ -72,6 +74,9 @@ class App extends React.Component {
             </Route>
             <Route path="/character-sheet/:id">
               <CharacterSheetPage/>
+            </Route>
+            <Route path="/dice-roller">
+              <DiceRollerPage/>
             </Route>
           </Switch>
           <Footer />

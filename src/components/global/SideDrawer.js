@@ -1,8 +1,11 @@
+import React from 'react';
+
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Drawer, List, Avatar, Typography, Divider, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import { withRouter } from 'react-router';
 import { withStyles } from '@material-ui/styles';
+
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import AssignmentIndOutlinedIcon from '@material-ui/icons/AssignmentIndOutlined';
 import Brightness7Icon from '@material-ui/icons/Brightness7';
@@ -10,7 +13,8 @@ import CreateOutlinedIcon from '@material-ui/icons/CreateOutlined';
 import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
 import HomeIcon from '@material-ui/icons/Home';
 import MeetingRoomOutlinedIcon from '@material-ui/icons/MeetingRoomOutlined';
-import React from 'react';
+import GroupIcon from '@material-ui/icons/Group';
+import CasinoIcon from '@material-ui/icons/Casino';
 
 import { fetchCurrentUser, logoutCurrentUser } from './../../redux/actions/userActions';
 import { setLightMode } from '../../redux/actions/lightModeActions';
@@ -69,6 +73,7 @@ class SideDrawer extends React.Component {
                                 <Typography variant="body1" align="center">Logged in as {this.props.user.currentUser.displayName}</Typography>
                             </div>
                             <Divider />
+                            <br />
                             <ListItem button onClick={() => { this.props.history.push("/"); this.props.handleDrawerClose() }}>
                                 <ListItemIcon><HomeIcon /></ListItemIcon>
                                 <ListItemText>Home</ListItemText>
@@ -81,6 +86,10 @@ class SideDrawer extends React.Component {
                                 <ListItemIcon><AssignmentIndOutlinedIcon /></ListItemIcon>
                                 <ListItemText>My Character Sheets</ListItemText>
                             </ListItem>
+                            <ListItem button onClick={() => { this.props.history.push("/campaigns"); this.props.handleDrawerClose() }}>
+                                <ListItemIcon><GroupIcon /></ListItemIcon>
+                                <ListItemText>Campaigns</ListItemText>
+                            </ListItem>
                             <ListItem button onClick={() => { this.props.logoutCurrentUser(); this.props.handleDrawerClose() }}>
                                 <ListItemIcon><ExitToAppOutlinedIcon /></ListItemIcon>
                                 <ListItemText>Log Out</ListItemText>
@@ -88,6 +97,7 @@ class SideDrawer extends React.Component {
                         </div>
                     ) : (
                             <div>
+                                <br />
                                 <ListItem button onClick={() => { this.props.history.push("/"); this.props.handleDrawerClose() }}>
                                     <ListItemIcon><HomeIcon /></ListItemIcon>
                                     <ListItemText>Home</ListItemText>
@@ -103,10 +113,19 @@ class SideDrawer extends React.Component {
                             </div>
                         )
                     }
-                    <ListItem button onClick={() => { this.props.lightMode.enabled ? this.props.setLightMode(false) : this.props.setLightMode(true) }}>
-                        <ListItemIcon><Brightness7Icon /></ListItemIcon>
-                        <ListItemText>Change to {!this.props.lightMode.enabled ? "Dark" : "Light"} Mode</ListItemText>
-                    </ListItem>
+                    <br />
+                    <Divider></Divider>
+                    <br />
+                    <div>
+                        <ListItem button onClick={() => { this.props.history.push("/dice-roller"); this.props.handleDrawerClose() }}>
+                            <ListItemIcon><CasinoIcon /></ListItemIcon>
+                            <ListItemText>Dice Roller</ListItemText>
+                        </ListItem>
+                        <ListItem button onClick={() => { this.props.lightMode.enabled ? this.props.setLightMode(false) : this.props.setLightMode(true) }}>
+                            <ListItemIcon><Brightness7Icon /></ListItemIcon>
+                            <ListItemText>Change to {!this.props.lightMode.enabled ? "Dark" : "Light"} Mode</ListItemText>
+                        </ListItem>
+                    </div>
                 </List>
             </Drawer>
         );

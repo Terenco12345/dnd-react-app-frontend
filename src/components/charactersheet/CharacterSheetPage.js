@@ -74,7 +74,7 @@ class CharacterSheetPage extends React.Component {
      * @param statName name (e.g. strength)
      */
     getStatModifier(statName) {
-        return (this.state.sheet.stats[statName] - 5) / 2;
+        return Math.floor((this.state.stats[statName] - 10) / 2);
     }
 
     /**
@@ -86,7 +86,7 @@ class CharacterSheetPage extends React.Component {
         if (mod >= 0) {
             sign = "+";
         } else if (mod < 0) {
-            sign = "-";
+            sign = "";
         }
         return " (" + sign + mod + ")"
     }
@@ -132,7 +132,7 @@ class CharacterSheetPage extends React.Component {
     calculateLevelFromExperience(exp) {
         const levelRequirements = [355000, 305000, 265000, 225000, 195000, 165000, 140000, 120000, 100000, 85000, 64000, 48000, 34000, 23000, 14000, 6500, 2700, 900, 300, 0];
         for (var i = 0; i < levelRequirements.length; i++) {
-            if (exp > levelRequirements[i]) {
+            if (exp >= levelRequirements[i]) {
                 return 20 - i;
             }
         }
@@ -298,7 +298,7 @@ class CharacterSheetPage extends React.Component {
                                                         .replace(/([A-Z])/g, ' $1')
                                                         // uppercase the first character
                                                         .replace(/^./, function (str) { return str.toUpperCase(); })
-                                                    + (sheet.skills[skill] && (" " + this.getModifierStringRepresentation(this.getSkillModifier(skill))))
+                                                    + (sheet.skills[skill] ? (" " + this.getModifierStringRepresentation(this.getSkillModifier(skill))): "")
                                                 }
                                             />
                                         </Grid>

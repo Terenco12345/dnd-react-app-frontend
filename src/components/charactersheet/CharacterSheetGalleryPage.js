@@ -256,7 +256,7 @@ class CharacterSheetGalleryPage extends React.Component {
                             {this.state.search !== "" && // Search prompt "Searching for ..."
                                 <div>
                                     <Typography style={{ marginTop: 20 }}>Searching for "{this.state.search}"</Typography>
-                                    <Typography>{sortedSheets.length === 0 ? "No results found!" : "Found "+sortedSheets.length+" match!"}</Typography>
+                                    <Typography>{sortedSheets.length === 0 ? "No results found!" : "Found " + sortedSheets.length + " match!"}</Typography>
                                 </div>}
                             <Grid className={classes.characterSheetList}
                                 container

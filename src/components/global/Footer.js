@@ -17,16 +17,16 @@ class Footer extends React.Component {
         const classes = this.props.classes;
         return (
             <div className={classes.root}>
-                <Divider style={{marginBottom: 20}}></Divider>
+                <Divider style={{ marginBottom: 20 }}></Divider>
                 <Typography variant="body1" gutterBottom>Contact us if you have any bugs, problems or suggestions!</Typography>
                 <Grid container justify="center" alignItems="center">
                     <Grid item>
-                        <IconButton onClick={()=>{window.open("https://github.com/Terenco12345/dnd-react-app")}}>
+                        <IconButton onClick={() => { window.open("https://github.com/Terenco12345/dnd-react-app") }}>
                             <GitHubIcon></GitHubIcon>
                         </IconButton>
                     </Grid>
                     <Grid item>
-                        <IconButton onClick={()=>{window.open("https://twitter.com/Cheese_Gr8er")}}>
+                        <IconButton onClick={() => { window.open("https://twitter.com/Cheese_Gr8er") }}>
                             <TwitterIcon></TwitterIcon>
                         </IconButton>
                     </Grid>
